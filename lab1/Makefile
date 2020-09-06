@@ -1,6 +1,6 @@
 IDIR=include
 #Choose compiler
-#CXX=
+CXX=g++
 CXXFLAGS=-I$(IDIR) -std=c++11
 
 ODIR=src
@@ -14,24 +14,20 @@ DEPS = $(patsubst %,$(IDIR)/%,$(_DEPS))
 _OBJ = deep_core.o vector_ops.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
-deep_core.o: deep_core.cpp $(DEPS)
-	g++ -c -o $@ $< ${CXXFLAGS}
-
-vector_ops.o: vector_ops.cpp $(DEPS)
-	g++ -c -o $@ $< ${CXXFLAGS}
-
+${ODIR}/%.o: %.cpp $(DEPS)
+	$(CXX) -c -o $@ $< ${CXXFLAGS}
 
 nnetwork_mpi.o:
-	g++ -c -o $@ nnetwork.cxx ${CXXFLAGS} -DUSE_MPI
+	$(CXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} -DUSE_MPI
 
 nnetwork.o:
-	g++ -c -o $@ nnetwork.cxx ${CXXFLAGS} 
+	$(CXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} 
 
 nnetwork_mpi: $(OBJ) nnetwork_mpi.o
-	g++ -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(LIBS)
 
 nnetwork: $(OBJ) nnetwork.o
-	g++ -o $@ $^ $(LIBS)
+	$(CXX) -o $@ $^ $(LIBS)
 
 run_serial:
 	./nnetwork
