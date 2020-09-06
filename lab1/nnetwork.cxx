@@ -115,7 +115,7 @@ int main(int argc, char * argv[]) {
       print ( yhat, 10, 10 );
       cout << "Ground truth:" << "\n";
       print ( b_y, 10, 10 );      
-      vector<float> loss_m ;//= yhat - b_y;
+      vector<float> loss_m = yhat - b_y;
       float loss = 0.0;
       for (unsigned k = 0; k < BATCH_SIZE*10; ++k){
         loss += loss_m[k]*loss_m[k];
