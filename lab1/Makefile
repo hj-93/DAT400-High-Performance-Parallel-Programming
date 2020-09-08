@@ -32,6 +32,9 @@ nnetwork: $(OBJ) nnetwork.o
 run_serial:
 	./nnetwork
 
+run_perf:
+	perf record ./nnetwork
+
 all: clean nnetwork_mpi nnetwork
 .PHONY: clean
 default: clean nnetwork 
