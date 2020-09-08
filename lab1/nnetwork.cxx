@@ -74,7 +74,7 @@ int main(int argc, char * argv[]) {
   
   std::chrono::time_point<std::chrono::system_clock> t1,t2;     
   cout << "Training the model ...\n";
-  for (unsigned i = 0; i < 10000; ++i) {    
+  for (unsigned i = 0; i < 500; ++i) {    
     t1 = std::chrono::system_clock::now();    
     // Building batches of input variables (X) and labels (y)
     int randindx = rand() % (42000-BATCH_SIZE);
