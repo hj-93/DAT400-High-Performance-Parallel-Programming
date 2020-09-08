@@ -13,6 +13,8 @@
 \usepackage{url}
 \usepackage{listings}
 \usepackage{tikz}
+\usepackage{enumitem}
+\usepackage[labelfont=bf]{caption}
 
 % set head and foot
 \usepackage{scrpage2}
@@ -35,6 +37,32 @@ Text...
 Text...
 
 \subsection*{Task 3}
-Text...
+\begin{enumerate}[label=(\alph*)]
+\item First, we have created a rule in the \textit{Makefile} to enable performance profiling. In particular, the rule is given by
+\begin{verbatim}
+run_perf:
+    perf record ./nnetwork    .
+\end{verbatim}
+
+\item After running the added rule, we have inspected the generated performance file \texttt{perf.data} by running the command \texttt{perf report}. Overall, there are three time-consuming operations.
+\begin{enumerate}[label=(\arabic*)]
+\item The most time is spent in the \texttt{dot} function in the file \texttt{vector\_ops.cpp}. It requires about 67.62\% of running time and computes the product of two matrices. Optimizing it could highly improve the total running time of the training.
+\item The second and third most time-consuming operations are array accesses on vector data-structures with 18.41\% and 9.36\% respectively. These operations might be optimized by reducing the number of cache misses while accessing vector elements.
+\item Apart from those three operations, there are not any others with significant share on the running time. 
+\end{enumerate}
+
+\item To monitor the number of LLC cache misses, we have run the command \texttt{perf stat -e LLC-load-misses ./nnetwork}. However, the machine that we have been using did not support for that. The program returned
+\begin{verbatim}
+Performance counter stats for './nnetwork':
+
+   <not supported>      LLC-load-misses:u
+
+     412.636442944 seconds time elapsed
+     
+     397.622062000 seconds user
+       6.620183000 seconds sys    .
+\end{verbatim}
+
+\end{enumerate}
 
 \end{document}
