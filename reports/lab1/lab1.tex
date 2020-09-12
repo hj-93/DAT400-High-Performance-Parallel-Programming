@@ -21,7 +21,7 @@
 \pagestyle{scrheadings}
 \clearscrheadfoot
 \ihead{Lab 1 -- Report}
-\ohead{Group 25: Hui Jing (cid: ...TODO...), Tobias Fuchs (cid: fuchs)}
+\ohead{Group 25: Hui Jing (cid: huij), Tobias Fuchs (cid: fuchs)}
 \cfoot{\pagemark}
 
 % set pdf options
@@ -31,10 +31,27 @@
 
 \section*{Report for Lab 1}
 \subsection*{Task 1}
-Text...
+\begin{center}
+	\includegraphics[scale=0.3]{task1 diff.png}
+\end{center}
 
 \subsection*{Task 2}
-Text...
+\begin{enumerate}[label=(\alph*)]
+\item Make debug build:
+\begin{center}
+\includegraphics[scale=0.25]{task2.1.png}
+\end{center}
+
+\item Fix segfault:
+\begin{center}
+\includegraphics[scale=0.25]{task2.2.png}
+\end{center}
+
+\item After variable "size" is initialized, the value it contains is 32768. z is a const reference vector, containing floats.  z[3] = 1.96690202.
+\begin{center}
+	\includegraphics[scale=0.3]{task2.3.png}
+\end{center}
+\end{enumerate}
 
 \subsection*{Task 3}
 \begin{enumerate}[label=(\alph*)]
