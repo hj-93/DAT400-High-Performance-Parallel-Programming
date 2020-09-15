@@ -31,23 +31,24 @@
 
 \section*{Report for Lab 1}
 \subsection*{Task 1}
+The attached screenshot shows the changes made to introduce a variable for the \texttt{C++} compiler used.
 \begin{center}
 	\includegraphics[scale=0.3]{task1 diff.png}
 \end{center}
 
 \subsection*{Task 2}
 \begin{enumerate}[label=(\alph*)]
-\item Make debug build:
+\item To make a debug build, we added the following flag.
 \begin{center}
 \includegraphics[scale=0.25]{task2.1.png}
 \end{center}
 
-\item Fix segfault:
+\item We changed the following lines to fix the \textit{segmentation} fault.
 \begin{center}
 \includegraphics[scale=0.25]{task2.2.png}
 \end{center}
 
-\item After variable "size" is initialized, the value it contains is 32768. z is a const reference vector, containing floats.  z[3] = 1.96690202.
+\item After variable \textit{size} is initialized, the value it contains is 32768. The variable \textit{z} is a \textit{const} reference vector, containing floats. \verb|z[3] = 1.96690202|.
 \begin{center}
 	\includegraphics[scale=0.3]{task2.3.png}
 \end{center}
