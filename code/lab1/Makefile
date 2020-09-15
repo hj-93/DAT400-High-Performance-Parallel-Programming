@@ -1,7 +1,7 @@
 IDIR=include
 #Choose compiler
 CXX=g++
-CXXFLAGS=-I$(IDIR) -std=c++11 -g
+CXXFLAGS=-I$(IDIR) -std=c++11 -g -O2
 
 ODIR=src
 LDIR =../lib

@@ -71,14 +71,15 @@ run_perf:
 
 \item To monitor the number of LLC cache misses, we have run the command \texttt{perf stat -e LLC-load-misses ./nnetwork}. However, the machine that we have been using did not support for that. The program returned
 \begin{verbatim}
-Performance counter stats for './nnetwork':
+ Performance counter stats for './nnetwork':
 
-   <not supported>      LLC-load-misses:u
+         2,043,328      LLC-load-misses:u
 
-     412.636442944 seconds time elapsed
-     
-     397.622062000 seconds user
-       6.620183000 seconds sys    .
+     215.866059446 seconds time elapsed
+
+     215.823836000 seconds user
+       0.035999000 seconds sys
+
 \end{verbatim}
 
 \end{enumerate}
