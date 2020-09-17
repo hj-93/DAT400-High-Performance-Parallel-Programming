@@ -5,8 +5,8 @@
 #include <iostream>
 #include "vector_ops.h"
 
-#define BLOCK_TILE
-//#define USE_PTHREAD
+//#define BLOCK_TILE
+#define USE_PTHREAD
 
 #ifdef USE_PTHREAD
 struct gemm_thread_args
@@ -201,7 +201,7 @@ vector<float> transform(float *m, const int C, const int R)
     return mT;
 }
 
-vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const int m1_columns, const int m2_columns, double *total_time_sec)
+vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1_rows, const int m1_columns, const int m2_columns, const int num_partitions, double *total_time_sec)
 {
     /*  Returns the product of two matrices: m1 x m2.
      Inputs:
@@ -248,17 +248,31 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
 #elif defined(USE_PTHREAD)
 
     const int num_partitions = 1; //[TASK] SHOULD BE CONFIGURED BY USER
+    const int chunk = m1_rows / num_partitions;
+    const int remainder = m1_rows % num_partitions;
+
     pthread_t threads[num_partitions];
+
     for (int i = 0; i < num_partitions; ++i)
     {
         gemm_thread_args *args = new gemm_thread_args;
+
+        args->m1 = &m1;
+        args->m1_columns = m1_columns;
+        args->m1_rows = m1_rows;
+        args->m2 = &m2;
+        args->m2_columns = m2_columns;
         args->output = &output;
-        // assign rest of the arguments of gemm_thread_args accordingly
-        //pthread_create( [TASK] FILL IN ARGUMENTS );
+
+        args->row_start = i * chunk + std::min(i, remainder);
+        args->row_end = (i + 1) * chunk + std::min(i + 1, remainder);
+
+        pthread_create(&threads[i], NULL, &dot_block, args);
     }
+
     for (int i = 0; i < num_partitions; ++i)
     {
-        //pthread_join( [TASK] FILL IN ARGUMENTS);
+        pthread_join(threads[i], NULL);
     }
 
 #else

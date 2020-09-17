@@ -28,6 +28,9 @@ int main(int argc, char *argv[])
 {
     const auto start_all = std::chrono::high_resolution_clock::now();
 
+    const int num_partitions = argc == 2 ? max(0, min(stoi(argv[1]), 1024)) : 1;
+    cout << "Number of partitions: " << to_string(num_partitions) << endl;
+
     string line;
     vector<string> line_v;
     int len, mpirank = 0;
@@ -95,22 +98,22 @@ int main(int argc, char *argv[])
         }
 
         // Feed forward
-        vector<float> a1 = relu(dot(b_X, W1, BATCH_SIZE, 784, 128, &total_time_sec));
-        vector<float> a2 = relu(dot(a1, W2, BATCH_SIZE, 128, 64, &total_time_sec));
-        vector<float> yhat = softmax(dot(a2, W3, BATCH_SIZE, 64, 10, &total_time_sec), 10);
+        vector<float> a1 = relu(dot(b_X, W1, BATCH_SIZE, 784, 128, num_partitions, &total_time_sec));
+        vector<float> a2 = relu(dot(a1, W2, BATCH_SIZE, 128, 64, num_partitions, &total_time_sec));
+        vector<float> yhat = softmax(dot(a2, W3, BATCH_SIZE, 64, 10, num_partitions, &total_time_sec), 10);
 
         // Back propagation
         vector<float> dyhat = (yhat - b_y);
         // dW3 = a2.T * dyhat
-        vector<float> dW3 = dot(transform(&a2[0], BATCH_SIZE, 64), dyhat, 64, BATCH_SIZE, 10, &total_time_sec);
+        vector<float> dW3 = dot(transform(&a2[0], BATCH_SIZE, 64), dyhat, 64, BATCH_SIZE, 10, num_partitions, &total_time_sec);
         // dz2 = dyhat * W3.T * relu'(a2)
-        vector<float> dz2 = dot(dyhat, transform(&W3[0], 64, 10), BATCH_SIZE, 10, 64, &total_time_sec) * reluPrime(a2);
+        vector<float> dz2 = dot(dyhat, transform(&W3[0], 64, 10), BATCH_SIZE, 10, 64, num_partitions, &total_time_sec) * reluPrime(a2);
         // dW2 = a1.T * dz2
-        vector<float> dW2 = dot(transform(&a1[0], BATCH_SIZE, 128), dz2, 128, BATCH_SIZE, 64, &total_time_sec);
+        vector<float> dW2 = dot(transform(&a1[0], BATCH_SIZE, 128), dz2, 128, BATCH_SIZE, 64, num_partitions, &total_time_sec);
         // dz1 = dz2 * W2.T * relu'(a1)
-        vector<float> dz1 = dot(dz2, transform(&W2[0], 128, 64), BATCH_SIZE, 64, 128, &total_time_sec) * reluPrime(a1);
+        vector<float> dz1 = dot(dz2, transform(&W2[0], 128, 64), BATCH_SIZE, 64, 128, num_partitions, &total_time_sec) * reluPrime(a1);
         // dW1 = X.T * dz1
-        vector<float> dW1 = dot(transform(&b_X[0], BATCH_SIZE, 784), dz1, 784, BATCH_SIZE, 128, &total_time_sec);
+        vector<float> dW1 = dot(transform(&b_X[0], BATCH_SIZE, 784), dz1, 784, BATCH_SIZE, 128, num_partitions, &total_time_sec);
 
         // Updating the parameters
         W3 = W3 - lr * dW3;
