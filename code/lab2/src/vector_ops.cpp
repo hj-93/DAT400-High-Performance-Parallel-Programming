@@ -179,7 +179,7 @@ vector<float> operator/(const vector<float> &m2, const float m1)
     return product;
 }
 
-vector<float> transform(float *m, const int C, const int R)
+vector<float> transform(const float *m, const int C, const int R)
 {
     /*  Returns a transpose matrix of input matrix.
      Inputs:
@@ -225,11 +225,13 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
     int M = m2_columns;
     int K = m1_columns;
 
-    for (int row_block = 0; row_block < N; row_block += block_size)
+    vector<float> m1_transposed = transform(m1.data(), m1_columns, m1_rows);
+
+    for (int k_block = 0; k_block < K; k_block += block_size)
     {
-        for (int k_block = 0; k_block < K; k_block += block_size)
+        for (int k = k_block; k < k_block + block_size && k < K; ++k)
         {
-            for (int k = k_block; k < k_block + block_size && k < K; ++k)
+            for (int row_block = 0; row_block < N; row_block += block_size)
             {
                 for (int row = row_block; row < row_block + block_size && row < N; ++row)
                 {
@@ -237,7 +239,7 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
                     {
                         for (int col = col_block; col < col_block + block_size && col < M; ++col)
                         {
-                            output[row * M + col] += m1[row * K + k] * m2[k * M + col];
+                            output[row * M + col] += m1_transposed[k * M + row] * m2[k * M + col];
                         }
                     }
                 }
