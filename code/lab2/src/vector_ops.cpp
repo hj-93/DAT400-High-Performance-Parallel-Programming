@@ -233,7 +233,7 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
             {
                 for (int row = row_block; row < row_block + block_size; ++row)
                 {
-                    for (int k = 0; k < m1_columns; ++k)
+                    for (int k = k_block; k < k_block + block_size; ++k)
                     {
                         for (int col = col_block; col < col_block + block_size; ++col)
                         {
