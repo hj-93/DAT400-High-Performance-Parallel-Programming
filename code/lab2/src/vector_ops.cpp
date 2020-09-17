@@ -30,10 +30,11 @@ void *dot_block(void *args)
         {
             for (int k = 0; k < curr_args->m1_columns; ++k)
             {
-                (*curr_args->output)[row * curr_args->m2_columns + col] += (*curr_args->m1)[row * curr_args->m1_columns + k] * (*curr_args->m2)[k * curr_args->m2_columns + col];
+                (*curr_args->output).at(row * curr_args->m2_columns + col) += (*curr_args->m1).at(row * curr_args->m1_columns + k) * (*curr_args->m2).at(k * curr_args->m2_columns + col);
             }
         }
     }
+    return NULL;
 }
 #endif
 
