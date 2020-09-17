@@ -5,7 +5,7 @@
 #include <iostream>
 #include "vector_ops.h"
 
-//#define BLOCK_TILE
+#define BLOCK_TILE
 //#define USE_PTHREAD
 
 #ifdef USE_PTHREAD
@@ -217,12 +217,34 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
     const auto start = std::chrono::high_resolution_clock::now();
 
     vector<float> output(m1_rows * m2_columns, 0);
+
 #if defined(BLOCK_TILE)
+
     const int block_size = 64 / sizeof(float); // 64 = common cache line size
     int N = m1_rows;
     int M = m2_columns;
     int K = m1_columns;
-// [TASK] WRITE CODE FOR BLOCK TILLING HERE
+
+    for (int row_block; row_block < N; row_block += block_size)
+    {
+        for (int k_block; k_block < K; k_block += block_size)
+        {
+            for (int col_block; col_block < M; col_block += block_size)
+            {
+                for (int row = row_block; row < row_block + block_size; ++row)
+                {
+                    for (int k = 0; k < m1_columns; ++k)
+                    {
+                        for (int col = col_block; col < col_block + block_size; ++col)
+                        {
+                            output[row * m2_columns + col] += m1[row * m1_columns + k] * m2[k * m2_columns + col];
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 #elif defined(USE_PTHREAD)
 
     const int num_partitions = 1; //[TASK] SHOULD BE CONFIGURED BY USER
@@ -238,7 +260,9 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
     {
         //pthread_join( [TASK] FILL IN ARGUMENTS);
     }
+
 #else
+
     for (int row = 0; row < m1_rows; ++row)
     {
         for (int k = 0; k < m1_columns; ++k)
@@ -249,6 +273,7 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
             }
         }
     }
+
 #endif
 
     *total_time_sec += std::chrono::duration<double>(std::chrono::high_resolution_clock::now() - start).count();
