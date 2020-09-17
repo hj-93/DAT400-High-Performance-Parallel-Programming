@@ -33,16 +33,142 @@
 \subsection*{Task 1}
 TODO...
 
+% Total time in dot: 64.991598s
+% Total time for all: 67.508550s
+% of running time in dot: 96.271654%
+
 \subsection*{Task 2}
-TODO...
+\begin{enumerate}[label=\alph*)]
+\item We have applied the loop permutation technique to achieve a more locality preserving access. To be more specific, we have reordered the loops in the following way.
+\begin{verbatim}
+for (int row = 0; row < m1_rows; ++row)
+  for (int k = 0; k < m1_columns; ++k)
+    for (int col = 0; col < m2_columns; ++col)
+      output[row * m2_columns + col] += ...;
+\end{verbatim}
+
+\item Before the transformation, the total running time is \SI{67.508550}{s}, whereby the running time of the \texttt{dot} function is \SI{64.991598}{s} (\SI{96.271654}{\%} of total running time). After the transformation, the total running time is \SI{10.498188}{s}, whereby the running of the \texttt{dot} function is \SI{7.994576}{s} (\SI{76.151964}{\%} of total running time). The amount of running time that is spent in the \texttt{dot} function has been reduced significant from \SI{96.271654}{\%} to \SI{76.151964}{\%} (difference \SI{20.11969}{\%}).
+\end{enumerate}
+
+% for (int row = 0; row < m1_rows; ++row)
+%   for (int k = 0; k < m1_columns; ++k)
+%     for (int col = 0; col < m2_columns; ++col)
+%       output[row * m2_columns + col] += m1[row * m1_columns + k] * m2[k * m2_columns + col];
+
+% Total time in dot: 7.994576s
+% Total time for all: 10.498188s
+% of running time in dot: 76.151964%
 
 \subsection*{Task 3}
 TODO...
 
+% Before:
+% Performance counter stats for './nnetwork':
+%
+%           511,665      LLC-load-misses:u                                           
+%
+%      10.513226493 seconds time elapsed
+%
+%      10.466333000 seconds user
+%       0.039978000 seconds sys
+
 \subsection*{Task 4}
-TODO...
+\begin{enumerate}[label=\alph*)]
+\item The following snippet shows our implementation of the parallel version of the \textsc{Gemm} kernel.
+\begin{verbatim}
+...
+
+const int chunk = m1_rows / num_partitions;
+const int remainder = m1_rows % num_partitions;
+
+pthread_t threads[num_partitions];
+
+for (int i = 0; i < num_partitions; ++i)
+{
+  gemm_thread_args *args = new gemm_thread_args;
+
+  args->m1 = &m1;
+  args->m1_columns = m1_columns;
+  args->m1_rows = m1_rows;
+  args->m2 = &m2;
+  args->m2_columns = m2_columns;
+  args->output = &output;
+
+  args->row_start = i * chunk + std::min(i, remainder);
+  args->row_end = (i + 1) * chunk + std::min(i + 1, remainder);
+
+  pthread_create(&threads[i], NULL, &dot_block, args);
+}
+
+for (int i = 0; i < num_partitions; ++i)
+  pthread_join(threads[i], NULL);
+
+...
+\end{verbatim}
+
+\item The running times for different number of threads are given by the table below.
+\begin{table}[htbp]
+\centering
+\sisetup{table-number-alignment=left,table-format=3.6,table-auto-round}
+\begin{tabular}{cS}
+\hline
+{Number of threads} & {Total running time (s)} \\
+\hline
+1 & 133.080872 \\
+2 & 70.213904 \\
+4 & 38.302974 \\
+8 & 38.577283 \\
+16 & 39.085463 \\
+32 & 40.197144 \\
+64 & 42.522234 \\
+\hline
+\end{tabular}
+\end{table}
+
+\item Since the used computer has 4 processor cores, the usage of more than 4 threads does not yield any improvement. Using more than 4 threads leads to an increasing total running time because the overhead for the thread management becomes larger and the maximum number of threads that can be executed in parallel stays constant.
+
+\end{enumerate}
+
+% 1 Thread
+% Total time in dot: 130.487245s
+% Total time for all: 133.080872s
+% % of running time in dot: 98.051089%
+
+% 2 Threads
+% Total time in dot: 67.654698s
+% Total time for all: 70.213904s
+% % of running time in dot: 96.355129%
+
+% 4 Threads
+% Total time in dot: 35.699967s
+% Total time for all: 38.302974s
+% % of running time in dot: 93.204166%
+
+% 8 Threads
+% Total time in dot: 36.038386s
+% Total time for all: 38.577283s
+% % of running time in dot: 93.418671%
+
+% 16 Threads
+% Total time in dot: 36.522703s
+% Total time for all: 39.085463s
+% % of running time in dot: 93.443189%
+
+% 32 Threads
+% Total time in dot: 37.582485s
+% Total time for all: 40.197144s
+% % of running time in dot: 93.495412%
+
+% 64 Threads
+% Total time in dot: 39.881794s
+% Total time for all: 42.522234s
+% % of running time in dot: 93.790447%
 
 \subsection*{Task 5}
 TODO...
+
+%  3.728% not par. (time not in dot) -> max speed up 26.822, with 4 processors max spped up 3.598
+%  5% not parallelizable -> max speed up 20, with 4 processors max speed up 3.478
+% 25% not parallelizable -> max speed up  4, with 4 processors max speed up 2.286
 
 \end{document}
