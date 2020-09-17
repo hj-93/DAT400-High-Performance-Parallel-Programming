@@ -225,17 +225,17 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
     int M = m2_columns;
     int K = m1_columns;
 
-    for (int row_block; row_block < N; row_block += block_size)
+    for (int row_block = 0; row_block < N; row_block += block_size)
     {
-        for (int k_block; k_block < K; k_block += block_size)
+        for (int k_block = 0; k_block < K; k_block += block_size)
         {
-            for (int col_block; col_block < M; col_block += block_size)
+            for (int col_block = 0; col_block < M; col_block += block_size)
             {
-                for (int row = row_block; row < row_block + block_size; ++row)
+                for (int row = row_block; row < row_block + block_size && row < N; ++row)
                 {
-                    for (int k = k_block; k < k_block + block_size; ++k)
+                    for (int k = k_block; k < k_block + block_size && k < K; ++k)
                     {
-                        for (int col = col_block; col < col_block + block_size; ++col)
+                        for (int col = col_block; col < col_block + block_size && col < M; ++col)
                         {
                             output[row * m2_columns + col] += m1[row * m1_columns + k] * m2[k * m2_columns + col];
                         }
