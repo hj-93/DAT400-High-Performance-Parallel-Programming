@@ -247,7 +247,6 @@ vector<float> dot(const vector<float> &m1, const vector<float> &m2, const int m1
 
 #elif defined(USE_PTHREAD)
 
-    const int num_partitions = 1; //[TASK] SHOULD BE CONFIGURED BY USER
     const int chunk = m1_rows / num_partitions;
     const int remainder = m1_rows % num_partitions;
 
