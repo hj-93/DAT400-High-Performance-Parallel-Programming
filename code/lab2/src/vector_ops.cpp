@@ -7,7 +7,7 @@
 
 std::chrono::microseconds AutoProfiler::totalExecTime = std::chrono::microseconds(0);
 
-//#define BLOCK_TILE 
+#define BLOCK_TILE
 //#define USE_PTHREAD 
 
 #ifdef USE_PTHREAD
@@ -211,9 +211,32 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
 #if defined(BLOCK_TILE)
     const int block_size = 64 / sizeof(float); // 64 = common cache line size
     int N = m1_rows;
-    int M = m2_columns; 
-    int K = m1_columns;
-// [TASK] WRITE CODE FOR BLOCK TILLING HERE
+    int M = m1_columns;
+    int K = m2_columns;
+    for (int i0 = 0; i0 < N; i0 += block_size) {
+        int imax = i0 + block_size > N ? N : i0 + block_size;
+
+        for (int j0 = 0; j0 < M; j0 += block_size) {
+            int jmax = j0 + block_size > M ? M : j0 + block_size;
+
+            for (int k0 = 0; k0 < K; k0 += block_size) {
+                int kmax = k0 + block_size > K ? K : k0 + block_size;
+
+                for (int j1 = j0; j1 < jmax; ++j1) {
+                    int sj = K * j1;
+
+                    for (int i1 = i0; i1 < imax; ++i1) {
+                        int mi = M * i1;
+                        int ki = K * i1;
+
+                        for (int k1 = k0; k1 < kmax; ++k1) {
+                            output[ki + k1] += m1[mi + j1] * m2[sj + k1];
+                        }
+                    }
+                }
+            }
+        }
+    }
 #elif defined(USE_PTHREAD) 
 
     const int num_partitions = 1; //[TASK] SHOULD BE CONFIGURED BY USER
