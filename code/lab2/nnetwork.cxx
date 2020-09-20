@@ -129,6 +129,6 @@ int main(int argc, char * argv[]) {
       cout << "*******************************************" << endl;
     };      
   };
-  
+  cout << "dot exec time: "  << AutoProfiler::totalExecTime.count()/1000 << "ms" << endl;
   return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef VECTOR_OPS
 #define VECTOR_OPS
 #include <vector>
+#include "benchmark_helper.h"
 using namespace std;
 void print ( const vector <float>& m, int n_rows, int n_columns );
 int argmax ( const vector <float>& m );

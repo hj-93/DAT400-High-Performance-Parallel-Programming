@@ -5,6 +5,8 @@
 #include <iostream>
 #include "vector_ops.h" 
 
+std::chrono::microseconds AutoProfiler::totalExecTime = std::chrono::microseconds(0);
+
 //#define BLOCK_TILE 
 //#define USE_PTHREAD 
 
@@ -202,7 +204,9 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
      m2_columns: int, number of columns in the right matrix m2
      Output: vector, m1 * m2, product of two vectors m1 and m2, a matrix of size m1_rows x m2_columns
      */
-    
+
+    AutoProfiler profiler;
+
     vector <float> output (m1_rows*m2_columns, 0);
 #if defined(BLOCK_TILE)
     const int block_size = 64 / sizeof(float); // 64 = common cache line size
