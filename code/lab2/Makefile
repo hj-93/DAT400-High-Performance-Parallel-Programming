@@ -32,7 +32,7 @@ nnetwork: $(OBJ) nnetwork.o
 	$(CXX) -o $@ $^ $(LIBS)
 
 run_pthreads:
-	./nnetwork
+	./nnetwork $(Num_T)
 
 run_parallel:
 	mpirun -np 4 ./nnetwork_mpi

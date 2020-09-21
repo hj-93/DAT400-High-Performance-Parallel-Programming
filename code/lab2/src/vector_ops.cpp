@@ -6,9 +6,10 @@
 #include "vector_ops.h" 
 
 std::chrono::microseconds AutoProfiler::totalExecTime = std::chrono::microseconds(0);
+extern int num_partitions;
 
-#define BLOCK_TILE
-//#define USE_PTHREAD 
+//#define BLOCK_TILE
+#define USE_PTHREAD
 
 #ifdef USE_PTHREAD
 struct gemm_thread_args
@@ -26,12 +27,13 @@ struct gemm_thread_args
 void *dot_block (void *args) {
     gemm_thread_args* curr_args = (gemm_thread_args*) args;
     for( int row = curr_args->row_start; row < curr_args->row_end; ++row ) {
-        for( int col = 0; col < curr_args->m2_columns; ++col ) {
-            for( int k = 0; k < curr_args->m1_columns; ++k ) {
+        for( int k = 0; k < curr_args->m1_columns; ++k ) {
+            for( int col = 0; col < curr_args->m2_columns; ++col ) {
                (*curr_args->output)[row * curr_args->m2_columns + col ] += (*curr_args->m1)[ row * curr_args->m1_columns + k ] * (*curr_args->m2)[k * curr_args->m2_columns + col];
             }
         }
     }
+    return nullptr;
 }
 #endif
 
@@ -237,18 +239,27 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
             }
         }
     }
-#elif defined(USE_PTHREAD) 
-
-    const int num_partitions = 1; //[TASK] SHOULD BE CONFIGURED BY USER
+#elif defined(USE_PTHREAD)
     pthread_t threads[num_partitions];
+
     for (int i = 0; i < num_partitions; ++i) {
-      gemm_thread_args* args = new gemm_thread_args;
-      args->output = &output;
-      // assign rest of the arguments of gemm_thread_args accordingly
-      //pthread_create( [TASK] FILL IN ARGUMENTS );   
+      auto row_start = i * m1_rows/num_partitions;
+      auto row_end   = (i == num_partitions - 1) ?  m1_rows : row_start + m1_rows/num_partitions;
+
+      gemm_thread_args* args = new gemm_thread_args( { &output,
+                                                       &m1,
+                                                       &m2,
+                                                       m1_rows,
+                                                       m1_columns,
+                                                       m2_columns,
+                                                       row_start,
+                                                       row_end,
+                                                     } );
+
+      pthread_create( &threads[i], NULL, &dot_block, args );
     }
     for (int i = 0; i < num_partitions; ++i) {
-      //pthread_join( [TASK] FILL IN ARGUMENTS);
+      pthread_join( threads[i], NULL );
     }
 #else
     for( int row = 0; row < m1_rows; ++row ) {

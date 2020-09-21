@@ -15,6 +15,7 @@
 #include "vector_ops.h"
 
 
+int num_partitions = 1;
 
 vector<string> split(const string &s, char delim) {
   stringstream ss(s);
@@ -27,6 +28,9 @@ vector<string> split(const string &s, char delim) {
 }
 
 int main(int argc, char * argv[]) {
+  if(argc == 2) {
+    num_partitions = std::stoi(argv[1]);
+  }
 
   string line;
   vector<string> line_v;
