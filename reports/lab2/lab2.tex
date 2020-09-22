@@ -31,11 +31,16 @@
 
 \section*{Report for Lab 2}
 \subsection*{Task 1}
-TODO...
+For timing GEMM kernel, we use a scoped profiler to calculate the elapsed time of executing dot function and accumulate the execution time. The total time spent in dot function is printed out when the program exits.
+\begin{verbatim}  
+Run: time make run_pthreads  
 
-% Total time in dot: 64.991598s
-% Total time for all: 67.508550s
-% of running time in dot: 96.271654%
+dot exec time: 63889ms
+real    1m6.346s
+user    1m6.294s
+sys     0m0.032s
+\end{verbatim}
+Percentage of dot execution: 63.889/66.346 = 96.2967\%
 
 \subsection*{Task 2}
 \begin{enumerate}[label=\alph*)]
@@ -60,8 +65,49 @@ for (int row = 0; row < m1_rows; ++row)
 % of running time in dot: 76.151964%
 
 \subsection*{Task 3}
-TODO...
+\begin{enumerate}[label=\alph*)]
+\item The cache line size of the machine is 64 bytes by "getconf -a | grep CACHE". Theoretically, we shall get the best performance if BLOCK\_SIZE * sizeof(float) equals to a cache line size, i.e. const int block\_size = 64 / sizeof(float);
 
+\item Our implementation of loop tiling:
+\begin{verbatim}  
+    int N = m1_rows;
+    int M = m1_columns;
+    int K = m2_columns;
+    for (int i0 = 0; i0 < N; i0 += block_size) {
+        int imax = i0 + block_size > N ? N : i0 + block_size;
+        for (int j0 = 0; j0 < M; j0 += block_size) {
+            int jmax = j0 + block_size > M ? M : j0 + block_size;
+            for (int k0 = 0; k0 < K; k0 += block_size) {
+                int kmax = k0 + block_size > K ? K : k0 + block_size;
+                for (int j1 = j0; j1 < jmax; ++j1) {
+                    int sj = K * j1;
+                    for (int i1 = i0; i1 < imax; ++i1) {
+                        int mi = M * i1;
+                        int ki = K * i1;
+                        for (int k1 = k0; k1 < kmax; ++k1) {
+                            output[ki + k1] += m1[mi + j1] * m2[sj + k1];
+     }}}}}}
+\end{verbatim}
+\item We have observed that BLOCK\_SIZE < 64 is not as good as BLOCK\_SIZE = 64. However, if we use task2 result as baseline, loop tiling didn´t significantly improve the cache hit. This could be explained by that the float vector is not aligned with cache line size, which causes extra cache miss even with looping technique. Meanwhile, extra loop instructions also increase the total execution time. In summary, we got better cache hits, but the total execution time increased.
+
+%When we increase the BLOCK\_SIZE, the result is getting closer and closer to the one %obtained in task2. Of course, when the BLOCK\_SIZE is big enough, the implementation is %identical to task2 implementation.
+
+Below is the result of baseline and loop tiling with BLOCK\_SIZE = 64:
+
+\begin{verbatim}  
+Run: perf stat --repeat 10 -e LLC-load-misses ./nnetwork
+
+ Performance counter stats for './nnetwork' (10 runs):
+      Baseline:
+           441,399      LLC-load-misses:u                                             ( +-  3.38% )
+          10.47281 +- 0.00513 seconds time elapsed  ( +-  0.05% )
+
+      Loop tiling:
+           415,132      LLC-load-misses:u                                             ( +-  2.12% )
+           16.6134 +- 0.0106 seconds time elapsed  ( +-  0.06% )
+\end{verbatim}
+
+\end{enumerate}
 % Before:
 % Performance counter stats for './nnetwork':
 %
@@ -165,8 +211,62 @@ for (int i = 0; i < num_partitions; ++i)
 % % of running time in dot: 93.790447%
 
 \subsection*{Task 5}
-TODO...
+\begin{enumerate}[label=\alph*)]
+\item Besides the multi-threading implementation, we also did loop interchange to improve the performance. 
 
+When the program run with 1 processor, total execution time: 
+
+11.786s = 2.605(sequential) + 9.181(parallelizable)
+
+If assume linear speedup, considering the machine has 4 cores, the theoretical  maximum speedup can be achieved is: 11.786/(2.605 + 9.181/4) = 2.41
+
+\item We used 1,2,3,4 threads to train the network respectively. 
+
+Sequential part: 
+
+	    2.605s (1 thread), 2.558s (2 threads), 2.605s (3 threads), 2.591s (4 threads)
+
+Parallel part: 
+
+	    9.181s (1 thread), 4.777s (2 threads), 3.499s (3 threads), 2.711s (4 threads)
+
+\begin{center}
+	\includegraphics[scale=0.5]{task-5-plot}
+\end{center}
+
+%theoretical:	    
+%11.786/(2.605 + 9.181/4) = 2.41
+%11.786/(2.605 + 9.181/3) = 2.08
+%11.786/(2.605 + 9.181/2) = 1.64
+%11.786/(2.605 + 9.181/1) = 1
+%
+%reality:
+%11.786/(2.591 + 2.711) = 2.223
+%11.786/(2.605 + 3.499) = 1.931
+%11.786/(2.558 + 4.777) = 1.60
+%11.786/(2.605 + 9.181) = 1
+
+\item The efficiency that we achieved with 4 threads is : 11.786/(2.591 + 4*2.711) = 0.877
+%dot exec time: 9181ms
+%real    0m11.786s
+%user    0m11.531s
+%sys     0m0.231s
+%
+%dot exec time: 4777ms
+%real    0m7.335s
+%user    0m11.546s
+%sys     0m0.233s
+%
+%dot exec time: 3499ms
+%real    0m6.104s
+%user    0m11.858s
+%sys     0m0.321s
+%
+%dot exec time: 2711ms
+%real    0m5.302s
+%user    0m11.539s
+%sys     0m0.435s
+\end{enumerate}
 %  3.728% not par. (time not in dot) -> max speed up 26.822, with 4 processors max spped up 3.598
 %  5% not parallelizable -> max speed up 20, with 4 processors max speed up 3.478
 % 25% not parallelizable -> max speed up  4, with 4 processors max speed up 2.286
