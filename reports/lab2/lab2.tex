@@ -31,7 +31,16 @@
 
 \section*{Report for Lab 2}
 \subsection*{Task 1}
-For timing GEMM kernel, we use a scoped profiler to calculate the elapsed time of executing dot function and accumulate the execution time. The total time spent in dot function is printed out when the program exits.
+\begin{enumerate}[label=\alph*)]
+\item We measured the execution time of \textsc{Gemm} kernel in the following way.
+\begin{verbatim}
+const auto start = std::chrono::high_resolution_clock::now();
+...
+... = std::chrono::duration<double>(std::chrono::high_resolution_clock::now()
+			- start).count();
+\end{verbatim}
+
+\item For timing \textsc{Gemm} kernel, we used the previously introduced snippet to calculate the elapsed time of executing dot function and accumulate the execution time. The total time spent in dot function is printed out when the program exits.
 \begin{verbatim}  
 Run: time make run_pthreads  
 
@@ -40,7 +49,8 @@ real    1m6.346s
 user    1m6.294s
 sys     0m0.032s
 \end{verbatim}
-Percentage of dot execution: 63.889/66.346 = 96.2967\%
+Percentage of dot execution: $63.889 / 66.346 = 96.2967\%$.
+\end{enumerate}
 
 \subsection*{Task 2}
 \begin{enumerate}[label=\alph*)]
@@ -66,7 +76,7 @@ for (int row = 0; row < m1_rows; ++row)
 
 \subsection*{Task 3}
 \begin{enumerate}[label=\alph*)]
-\item The cache line size of the machine is 64 bytes by "getconf -a | grep CACHE". Theoretically, we shall get the best performance if BLOCK\_SIZE * sizeof(float) equals to a cache line size, i.e. const int block\_size = 64 / sizeof(float);
+\item The cache line size of the machine is 64 bytes by \texttt{getconf -a | grep CACHE}. Theoretically, we shall get the best performance if \verb|BLOCK_SIZE * sizeof(float)| equals to a cache line size, i.e., \verb|const int block_size = 64 / sizeof(float);|
 
 \item Our implementation of loop tiling:
 \begin{verbatim}  
@@ -88,11 +98,11 @@ for (int row = 0; row < m1_rows; ++row)
                             output[ki + k1] += m1[mi + j1] * m2[sj + k1];
      }}}}}}
 \end{verbatim}
-\item We have observed that BLOCK\_SIZE < 64 is not as good as BLOCK\_SIZE = 64. However, if we use task2 result as baseline, loop tiling didn´t significantly improve the cache hit. This could be explained by that the float vector is not aligned with cache line size, which causes extra cache miss even with looping technique. Meanwhile, extra loop instructions also increase the total execution time. In summary, we got better cache hits, but the total execution time increased.
+\item We have observed that \verb|BLOCK_SIZE < 64| is not as good as \verb|BLOCK_SIZE = 64|. However, if we use tasks 2 result as baseline, loop tiling didn't significantly improve the cache hit. This could be explained by that the float vector is not aligned with cache line size, which causes extra cache miss even with looping technique. Meanwhile, extra loop instructions also increase the total execution time. In summary, we got better cache hits, but the total execution time increased.
 
 %When we increase the BLOCK\_SIZE, the result is getting closer and closer to the one %obtained in task2. Of course, when the BLOCK\_SIZE is big enough, the implementation is %identical to task2 implementation.
 
-Below is the result of baseline and loop tiling with BLOCK\_SIZE = 64:
+Below is the result of baseline and loop tiling with \verb|BLOCK_SIZE = 64|:
 
 \begin{verbatim}  
 Run: perf stat --repeat 10 -e LLC-load-misses ./nnetwork
@@ -246,7 +256,7 @@ Parallel part:
 %11.786/(2.558 + 4.777) = 1.60
 %11.786/(2.605 + 9.181) = 1
 
-\item The efficiency that we achieved with 4 threads is : 11.786/(2.591 + 4*2.711) = 0.877
+\item The efficiency that we achieved with 4 threads is : $\frac{11.786}{2.591 + 4 \cdot 2.711} = 0.877$
 %dot exec time: 9181ms
 %real    0m11.786s
 %user    0m11.531s
