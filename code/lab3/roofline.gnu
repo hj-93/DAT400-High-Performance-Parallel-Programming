@@ -123,6 +123,32 @@ set term postscript solid color rounded
 set output "Results.Local.Server/Run.001/roofline.ps"
 
 # Plotting goes after this...
+# Points
+set object circle at first 0.074451,0.174285 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first 0.071332,0.223071 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first 0.061943,0.197753 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2
+set object circle at first -5,5 radius char 0.5 \
+    fillstyle empty border lc rgb '#aa1100' lw 2    
+
 set label '64.8 GFLOPs/sec (FP64 Maximum)' at 2.0000000e+00,7.7712000e+01 left textcolor rgb '#000080'
 set label 'L1 - 441.1 GB/s' at 3.0709191e-02,1.6392305e+01 left rotate by 45 textcolor rgb '#800000'
 set label 'L2 - 55.6 GB/s' at 8.6462728e-02,5.8220975e+00 left rotate by 45 textcolor rgb '#800000'
