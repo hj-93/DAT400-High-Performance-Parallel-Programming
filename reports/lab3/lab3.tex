@@ -32,11 +32,21 @@
 \section*{Report for Lab 3}
 \subsection*{Task 1 -- ERT}
 \begin{enumerate}[label=\alph*)]
-\item Text...
+\item 3 levels of cache is available in the machine.
+
+ \texttt{lscpu |grep -i cache}
+\begin{verbatim}
+L1d cache:           32K
+L1i cache:           32K
+L2 cache:            256K
+L3 cache:            6144K
+\end{verbatim}
 % L1: 64KiB (32KiB Instruction-Cache, 32KiB Data-Cache), L2: 256KiB, L3: 6144KiB = 6 MiB 
 
-\item Text...
-% L1: 441.2GiB/s, L2: 55.81GiB/s, L3: 41.94GiB/s, DRAM: 31.21GiB/s
+\item
+Memory Bandwith: L1: \SI{441.2}{GiB/s}, L2: \SI{55.81}{GiB/s}, L3: \SI{41.94}{GiB/s}, DRAM: \SI{31.21}{GiB/s}
+
+Machine Performance: \SI{64.8} {GFLOPs/sec}
 \end{enumerate}
 
 \subsection*{Task 2 -- Calculating AI using SDE}
@@ -127,7 +137,7 @@ The performances for different configurations are given Table~\ref{tab:tab5}.
  & \multicolumn{4}{c}{Problem Sizes} \\
 Threads & \SI{0.5}{M} & \SI{1}{M} & \SI{10}{M} & \SI{100}{M} \\
 \hline
-1 & \SI{0.174285}{GFLOP/s} & \SI{0.177563}{GFLOP/B} & \SI{0.204909}{GFLOP/s} & \SI{0.206918}{GFLOP/s} \\
+1 & \SI{0.174285}{GFLOP/s} & \SI{0.177563}{GFLOP/s} & \SI{0.204909}{GFLOP/s} & \SI{0.206918}{GFLOP/s} \\
 2 & \SI{0.223071}{GFLOP/s} & \SI{0.297468}{GFLOP/s} & \SI{0.385037}{GFLOP/s} & \SI{0.404276}{GFLOP/s} \\
 4 & \SI{0.197753}{GFLOP/s} & \SI{0.311343}{GFLOP/s} & \SI{0.652759}{GFLOP/s} & \SI{0.772658}{GFLOP/s} \\
 \hline
@@ -138,8 +148,10 @@ Threads & \SI{0.5}{M} & \SI{1}{M} & \SI{10}{M} & \SI{100}{M} \\
 
 \subsection*{Task 3 -- Performance Analysis Results}
 \begin{enumerate}[label=\alph*)]
-\item Text...
-
+\item The figure below shows the roofline model and the obtained measurements. We observed that the GFLOP/s increased with an increasing number of threads and also increased with an increasing size of the stream file.  The GFLOP/s obtained shows the application is memory bound, however, it did not reach the maximum performance, i.e. the algorithm can still be improved.
+\begin{center}
+	\includegraphics[scale=0.5]{roofline_graph}
+\end{center}
 % - Attainable Flop/s = min(peak Flop/s, AI * peak GB/s)
 % - Memory Bandwidth from Task 1
 % - One diagram for each memory type
