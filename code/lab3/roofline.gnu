@@ -99,7 +99,7 @@ set xrange [1.000000e-02 : 1.000000e+02] noreverse nowriteback
 set x2range [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
 set ylabel "GFLOPs / sec" 
 set y2label "" 
-set yrange [1.000000e+00 : *] noreverse nowriteback
+set yrange [1.000000e-01 : *] noreverse nowriteback
 set y2range [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
 set zlabel "" 
 set zrange [ * : * ] noreverse nowriteback  # (currently [-10.0000:10.0000] )
@@ -124,29 +124,30 @@ set output "roofline.ps"
 
 # Plotting goes after this...
 # Points
+
 set object circle at first 0.074451,0.174285 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
 set object circle at first 0.071332,0.223071 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
 set object circle at first 0.061943,0.197753 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074724,0.177562 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.073135,0.297467 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.069005,0.311343 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074972,0.204909 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074743,0.385036 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074184,0.65275 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074997,0.206917 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074961,0.404275 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2
-set object circle at first -5,5 radius char 0.5 \
+set object circle at first 0.074893,0.772657 radius char 0.5 \
     fillstyle empty border lc rgb '#aa1100' lw 2    
 
 set label '64.8 GFLOPs/sec (FP64 Maximum)' at 2.0000000e+00,7.7712000e+01 left textcolor rgb '#000080'
