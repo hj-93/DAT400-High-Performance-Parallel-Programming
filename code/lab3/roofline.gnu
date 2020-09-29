@@ -120,7 +120,7 @@ set loadpath
 set fit noerrorvariables
 
 set term postscript solid color rounded
-set output "Results.Local.Server/Run.001/roofline.ps"
+set output "roofline.ps"
 
 # Plotting goes after this...
 # Points
