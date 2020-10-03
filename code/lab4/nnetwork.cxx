@@ -129,6 +129,7 @@ int main(int argc, char * argv[]) {
       cout << "*******************************************" << endl;
     };      
   };
-  
+  extern double total_time_in_parallel;
+  std::cout << "Parallel Execution: " << total_time_in_parallel << "seconds\n";
   return 0;
 }
