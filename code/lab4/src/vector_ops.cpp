@@ -228,14 +228,10 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
 #else
     double start = omp_get_wtime();
     for( int row = 0; row < m1_rows; ++row ) {
-	// #pragma omp parallel for shared(row) //task 4.1
-        for( int col = 0; col < m2_columns; ++col ) {
-            float sum = 0;
-            #pragma omp parallel for shared(row, col) reduction(+: sum)
-            for( int k = 0; k < m1_columns; ++k ) {
-                sum += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
+        for( int k = 0; k < m1_columns; ++k ) {
+            for( int col = 0; col < m2_columns; ++col ) {
+                output[ row * m2_columns + col ] += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
             }
-            output[ row * m2_columns + col ] = sum;
         }
     }
     double end = omp_get_wtime();

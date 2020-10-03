@@ -1,6 +1,6 @@
 IDIR=include
 CXX=g++-8
-CXXFLAGS=-I$(IDIR) -std=c++11 -fopenmp -O3
+CXXFLAGS=-I$(IDIR) -std=c++11 -fopenmp -O3 -fopt-info-loop-vec-optimized=optimized_info # -fopt-info-loop-vec-missed=non_optimized_info
 
 ODIR=src
 LDIR =../lib
