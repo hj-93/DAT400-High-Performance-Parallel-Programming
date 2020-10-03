@@ -227,21 +227,16 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
     }
 #else
     double start = omp_get_wtime();
-    #pragma omp parallel
-    {
-        int nt = omp_get_num_threads();
-        auto chunk_size = m1_rows/nt == 0 ? m1_rows : m1_rows/nt;
-        #pragma omp for schedule(guided, chunk_size)
-        for( int row = 0; row < m1_rows; ++row ) {
-            for( int col = 0; col < m2_columns; ++col ) {
-                for( int k = 0; k < m1_columns; ++k ) {
-                    output[ row * m2_columns + col ] += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
-                }
+    for( int row = 0; row < m1_rows; ++row ) {
+	#pragma omp parallel for shared(row) //task 4.1
+        for( int col = 0; col < m2_columns; ++col ) {
+            for( int k = 0; k < m1_columns; ++k ) {
+                output[ row * m2_columns + col ] += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
             }
         }
     }
-double end = omp_get_wtime();
-total_time_in_parallel += end - start;
+    double end = omp_get_wtime();
+    total_time_in_parallel += end - start;
 
 #endif
   return output;
