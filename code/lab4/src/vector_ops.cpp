@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include "vector_ops.h" 
+#include <omp.h>
 
 //#define BLOCK_TILE 
 //#define USE_PTHREAD 
@@ -224,7 +225,18 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
       //pthread_join( [TASK] FILL IN ARGUMENTS);
     }
 #else
+#pragma omp parallel for
     for( int row = 0; row < m1_rows; ++row ) {
+        int t = omp_get_thread_num();
+        #pragma omp critical(next_work_item)
+        std::cout << "Thread Id: " << t << std::endl;
+
+        if(row == 0 && t == 0) {
+            int nt = omp_get_num_threads();
+            #pragma omp critical(next_work_item)
+            std::cout << "Number of Threads: " << nt << std::endl;
+        }
+
         for( int col = 0; col < m2_columns; ++col ) {
             for( int k = 0; k < m1_columns; ++k ) {
                 output[ row * m2_columns + col ] += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
