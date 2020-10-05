@@ -135,7 +135,11 @@ int main(int argc, char * argv[]) {
   };
 
   double end_omp = omp_get_wtime();
-  cout << "Total time (all):" << (end_omp - start_omp) << "s" << endl;
+  double total_omp = end_omp - start_omp;
+  cout << "*******************************************" << endl;
+  cout << "Total time in dot: " << total_time << "s" << endl;
+  cout << "Total time (all): " << total_omp << "s" << endl;
+  cout << "Percentage in dot: " << (total_time / total_omp) * 100.0 << "%" << endl;
   
   return 0;
 }
