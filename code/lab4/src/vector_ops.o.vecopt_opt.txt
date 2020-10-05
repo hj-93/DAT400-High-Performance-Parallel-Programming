@@ -1,0 +1,569 @@
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 1 iterations completely unrolled (header execution count 95145680)
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:91:30: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:110:37: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:129:34: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:148:31: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:167:26: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+src/vector_ops.cpp:185:27: note: basic block vectorized
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 4 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 1 iterations completely unrolled (header execution count 95145680)
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/locale_facets.h:1085:16: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:48:23: note: not vectorized: control flow in loop.
+src/vector_ops.cpp:48:23: note: bad loop form.
+src/vector_ops.cpp:49:27: note: not vectorized: loop contains function calls or data references that cannot be analyzed
+src/vector_ops.cpp:48:23: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _36 = MEM[(const struct basic_ios *)_31]._M_ctype;
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _28 = cout._vptr.basic_ostream;
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _29 = MEM[(long int *)_28 + -24B];
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:49:27: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ostream:509:30: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:48:23: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:50:26: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ostream:228:43: note: not consecutive access _4 = *_20;
+/usr/include/c++/8/ostream:228:43: note: not consecutive access _17 = MEM[(float * *)m_12(D)];
+/usr/include/c++/8/ostream:228:43: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:49:27: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:874:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:875:51: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not consecutive access _45 = MEM[(const struct ctype *)_36].D.52696._vptr.facet;
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not consecutive access _46 = MEM[(int (*) () *)_45 + 48B];
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/locale_facets.h:877:23: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:55:1: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not suitable for gather load _11 = *__result$_M_current_18;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: bad data references.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not consecutive access _11 = *__result$_M_current_18;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not consecutive access _12 = *_19;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5656:7: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not consecutive access _27 = *_8;
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not consecutive access _14 = *__result$_M_current_17;
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:58:63: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: control flow in loop.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: bad loop form.
+/usr/include/c++/8/bits/char_traits.h:352:49: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1573:14: note: not consecutive access MEM[(char_type &)&D.60545 + 23] = 0;
+/usr/include/c++/8/bits/random.h:1573:14: note: not consecutive access MEM[(size_type *)&D.60545 + 8B] = 7;
+/usr/include/c++/8/bits/random.h:1573:14: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/basic_string.h:220:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1611:29: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:102:26: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: basic block vectorized
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not consecutive access _101 = MEM[(long unsigned int *)&generator];
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not consecutive access MEM[(long unsigned int *)&generator] = __res_71;
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:75:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/basic_string.h:220:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:90:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:90:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:91:30: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:91:30: note: not consecutive access MEM[(float * *)sum_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:91:30: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:91:30: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:91:30: note: basic block vectorized
+src/vector_ops.cpp:90:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:90:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:90:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:90:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:94:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:109:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:109:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:110:37: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:110:37: note: not consecutive access MEM[(float * *)difference_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:110:37: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:110:37: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:110:37: note: basic block vectorized
+src/vector_ops.cpp:109:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:109:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:109:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:109:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:113:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:128:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:128:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:129:34: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:129:34: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:129:34: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:129:34: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:129:34: note: basic block vectorized
+src/vector_ops.cpp:128:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:128:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:128:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:128:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:132:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:147:28: note: not vectorized: not suitable for gather load _2 = *_23;
+src/vector_ops.cpp:147:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:148:31: note: not consecutive access _17 = MEM[(float * *)m2_7(D)];
+src/vector_ops.cpp:148:31: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_66;
+src/vector_ops.cpp:148:31: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:148:31: note: basic block vectorized
+src/vector_ops.cpp:147:28: note: not consecutive access _2 = *_23;
+src/vector_ops.cpp:147:28: note: not consecutive access *_21 = _3;
+src/vector_ops.cpp:147:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:151:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:166:28: note: not vectorized: not suitable for gather load _2 = *_23;
+src/vector_ops.cpp:166:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:167:26: note: not consecutive access _17 = MEM[(float * *)m2_7(D)];
+src/vector_ops.cpp:167:26: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_66;
+src/vector_ops.cpp:167:26: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:167:26: note: basic block vectorized
+src/vector_ops.cpp:166:28: note: not consecutive access _2 = *_23;
+src/vector_ops.cpp:166:28: note: not consecutive access *_21 = _3;
+src/vector_ops.cpp:166:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:170:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:185:27: note: not vectorized: not suitable for gather load _12 = *_10;
+src/vector_ops.cpp:185:27: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:185:27: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:185:27: note: basic block vectorized
+src/vector_ops.cpp:185:27: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:185:27: note: not consecutive access _12 = *_10;
+src/vector_ops.cpp:185:27: note: not consecutive access *_20 = _12;
+src/vector_ops.cpp:185:27: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:191:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 4 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:240:31: note: not vectorized: multiple nested loops.
+src/vector_ops.cpp:240:31: note: bad loop form.
+src/vector_ops.cpp:241:31: note: bad data references.
+src/vector_ops.cpp:242:39: note: versioning for alias required: can't determine dependence between *_55 and *_40
+src/vector_ops.cpp:242:39: note: versioning for alias required: can't determine dependence between *_26 and *_40
+
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: can't use a fully-masked loop because the target doesn't have the appropriate masked load or store.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: loop vectorized
+src/vector_ops.cpp:242:39: note: loop versioned for vectorization because of possible aliasing
+src/vector_ops.cpp:242:39: note: loop with 2 iterations completely unrolled (header execution count 49944810)
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not consecutive access MEM[(struct _Vector_base *)output_30(D)]._M_impl._M_start = _66;
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not consecutive access MEM[(struct _Vector_base *)output_30(D)]._M_impl._M_end_of_storage = _19;
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:229:33: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:240:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:253:10: note: not consecutive access _16 = *total_time_49(D);
+src/vector_ops.cpp:253:10: note: not consecutive access *total_time_49(D) = _18;
+src/vector_ops.cpp:253:10: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:253:10: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:253:10: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:33: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:52: note: not consecutive access _53 = MEM[(float * *)output_30(D)];
+src/vector_ops.cpp:243:52: note: not consecutive access _51 = MEM[(float * *)m1_38(D)];
+src/vector_ops.cpp:243:52: note: not consecutive access _52 = MEM[(float * *)m2_39(D)];
+src/vector_ops.cpp:243:52: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:240:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:240:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: vect__10.161_181 = MEM[(const value_type &)vectp.159_179];
+ scalar_type: const vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: vect__14.165_188 = MEM[(value_type &)vectp.163_186];
+ scalar_type: vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: MEM[(value_type &)vectp.167_193] = vect__15.166_189;
+ scalar_type: vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:241:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:241:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _82 = *_55;
+src/vector_ops.cpp:242:39: note: not consecutive access _173 = *_167;
+src/vector_ops.cpp:242:39: note: not consecutive access _10 = *_26;
+src/vector_ops.cpp:242:39: note: not consecutive access *_26 = _41;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _43 = *_144;
+src/vector_ops.cpp:242:39: note: not consecutive access _203 = *_202;
+src/vector_ops.cpp:242:39: note: not consecutive access *_202 = _204;
+src/vector_ops.cpp:242:39: note: not consecutive access _14 = *_55;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:17: note: not consecutive access _147 = *_55;
+src/vector_ops.cpp:242:17: note: not consecutive access _152 = *_151;
+src/vector_ops.cpp:242:17: note: not consecutive access _158 = *_157;
+src/vector_ops.cpp:242:17: note: not consecutive access *_157 = _159;
+src/vector_ops.cpp:242:17: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _126 = *_127;
+src/vector_ops.cpp:242:39: note: not consecutive access _70 = *_22;
+src/vector_ops.cpp:242:39: note: not consecutive access *_22 = _139;
+src/vector_ops.cpp:242:39: note: not consecutive access _59 = *_55;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:254:1: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/locale_facets.h:1085:16: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:65: note: not vectorized: multiple nested loops.
+src/vector_ops.cpp:243:65: note: bad loop form.
+src/vector_ops.cpp:241:31: note: bad data references.
+src/vector_ops.cpp:242:39: note: versioning for alias required: can't determine dependence between *_52 and *_28
+src/vector_ops.cpp:242:39: note: versioning for alias required: can't determine dependence between *_50 and *_28
+
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: Unknown misalignment, naturally aligned
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: can't use a fully-masked loop because the target doesn't have the appropriate masked load or store.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: not ssa-name.
+src/vector_ops.cpp:242:39: note: use not simple.
+src/vector_ops.cpp:242:39: note: loop vectorized
+src/vector_ops.cpp:242:39: note: loop versioned for vectorization because of possible aliasing
+src/vector_ops.cpp:242:39: note: loop with 2 iterations completely unrolled (header execution count 49959011)
+src/vector_ops.cpp:231:13: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:231:13: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:52: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:243:52: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:33: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:52: note: not consecutive access _46 = MEM[(float * *)_27];
+src/vector_ops.cpp:243:52: note: not consecutive access _47 = MEM[(float * *)_33];
+src/vector_ops.cpp:243:52: note: not consecutive access _48 = MEM[(float * *)_40];
+src/vector_ops.cpp:243:52: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:243:52: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:52: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: vect__35.96_158 = MEM[(const value_type &)vectp.94_156];
+ scalar_type: const vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: vect__41.100_165 = MEM[(value_type &)vectp.98_163];
+ scalar_type: vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no vectype for stmt: MEM[(value_type &)vectp.102_170] = vect__42.101_166;
+ scalar_type: vector(4) float
+src/vector_ops.cpp:243:54: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:241:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:241:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _64 = *_52;
+src/vector_ops.cpp:242:39: note: not consecutive access _150 = *_144;
+src/vector_ops.cpp:242:39: note: not consecutive access _35 = *_50;
+src/vector_ops.cpp:242:39: note: not consecutive access *_50 = _36;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _43 = *_121;
+src/vector_ops.cpp:242:39: note: not consecutive access _180 = *_179;
+src/vector_ops.cpp:242:39: note: not consecutive access *_179 = _181;
+src/vector_ops.cpp:242:39: note: not consecutive access _41 = *_52;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:17: note: not consecutive access _124 = *_52;
+src/vector_ops.cpp:242:17: note: not consecutive access _129 = *_128;
+src/vector_ops.cpp:242:17: note: not consecutive access _135 = *_134;
+src/vector_ops.cpp:242:17: note: not consecutive access *_134 = _136;
+src/vector_ops.cpp:242:17: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:39: note: not consecutive access _67 = *_52;
+src/vector_ops.cpp:242:39: note: not consecutive access _58 = *_59;
+src/vector_ops.cpp:242:39: note: not consecutive access _5 = *_93;
+src/vector_ops.cpp:242:39: note: not consecutive access *_93 = _116;
+src/vector_ops.cpp:242:39: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:242:39: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:242:39: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:48:23: note: not vectorized: control flow in loop.
+src/vector_ops.cpp:48:23: note: bad loop form.
+src/vector_ops.cpp:49:27: note: not vectorized: loop contains function calls or data references that cannot be analyzed
+src/vector_ops.cpp:48:23: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _36 = MEM[(const struct basic_ios *)_31]._M_ctype;
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _28 = cout._vptr.basic_ostream;
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not consecutive access _29 = MEM[(long int *)_28 + -24B];
+/usr/include/c++/8/bits/basic_ios.h:49:7: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:49:27: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ostream:509:30: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:48:23: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:50:26: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ostream:228:43: note: not consecutive access _4 = *_20;
+/usr/include/c++/8/ostream:228:43: note: not consecutive access _17 = MEM[(float * *)m_12(D)];
+/usr/include/c++/8/ostream:228:43: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:49:27: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:874:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:875:51: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not consecutive access _45 = MEM[(const struct ctype *)_36].D.52696._vptr.facet;
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not consecutive access _46 = MEM[(int (*) () *)_45 + 48B];
+/usr/include/c++/8/bits/locale_facets.h:877:27: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/locale_facets.h:877:23: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:55:1: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not suitable for gather load _11 = *__result$_M_current_18;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: bad data references.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not consecutive access _11 = *__result$_M_current_18;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not consecutive access _12 = *_19;
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5656:7: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not consecutive access _27 = *_8;
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not consecutive access _14 = *__result$_M_current_17;
+/usr/include/c++/8/bits/stl_algo.h:5659:2: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:5658:24: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:58:63: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.tcc:3331:34: note: loop with 2 iterations completely unrolled (header execution count 95145575)
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: control flow in loop.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: bad loop form.
+/usr/include/c++/8/bits/char_traits.h:352:49: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1573:14: note: not consecutive access MEM[(char_type &)&D.60545 + 23] = 0;
+/usr/include/c++/8/bits/random.h:1573:14: note: not consecutive access MEM[(size_type *)&D.60545 + 8B] = 7;
+/usr/include/c++/8/bits/random.h:1573:14: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/basic_string.h:220:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1611:29: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:71:34: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:102:26: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: basic block vectorized
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not consecutive access _101 = MEM[(long unsigned int *)&generator];
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not consecutive access MEM[(long unsigned int *)&generator] = __res_71;
+/usr/include/c++/8/bits/random.tcc:3337:7: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algo.h:4435:22: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:75:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/basic_string.h:220:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:125:19: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/random.h:1577:14: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:90:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:90:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:91:30: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:91:30: note: not consecutive access MEM[(float * *)sum_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:91:30: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:91:30: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:91:30: note: basic block vectorized
+src/vector_ops.cpp:90:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:90:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:90:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:90:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:94:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:109:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:109:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:110:37: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:110:37: note: not consecutive access MEM[(float * *)difference_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:110:37: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:110:37: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:110:37: note: basic block vectorized
+src/vector_ops.cpp:109:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:109:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:109:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:109:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:113:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:128:28: note: not vectorized: not suitable for gather load _2 = *_26;
+src/vector_ops.cpp:128:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:129:34: note: not consecutive access _18 = MEM[(float * *)m1_8(D)];
+src/vector_ops.cpp:129:34: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_69;
+src/vector_ops.cpp:129:34: note: not consecutive access _19 = MEM[(float * *)m2_14(D)];
+src/vector_ops.cpp:129:34: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:129:34: note: basic block vectorized
+src/vector_ops.cpp:128:28: note: not consecutive access _2 = *_26;
+src/vector_ops.cpp:128:28: note: not consecutive access _3 = *_24;
+src/vector_ops.cpp:128:28: note: not consecutive access *_23 = _4;
+src/vector_ops.cpp:128:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:132:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:147:28: note: not vectorized: not suitable for gather load _2 = *_23;
+src/vector_ops.cpp:147:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:148:31: note: not consecutive access _17 = MEM[(float * *)m2_7(D)];
+src/vector_ops.cpp:148:31: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_66;
+src/vector_ops.cpp:148:31: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:148:31: note: basic block vectorized
+src/vector_ops.cpp:147:28: note: not consecutive access _2 = *_23;
+src/vector_ops.cpp:147:28: note: not consecutive access *_21 = _3;
+src/vector_ops.cpp:147:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:151:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:166:28: note: not vectorized: not suitable for gather load _2 = *_23;
+src/vector_ops.cpp:166:28: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:167:26: note: not consecutive access _17 = MEM[(float * *)m2_7(D)];
+src/vector_ops.cpp:167:26: note: not consecutive access MEM[(float * *)product_9(D) + 8B] = __first_66;
+src/vector_ops.cpp:167:26: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:167:26: note: basic block vectorized
+src/vector_ops.cpp:166:28: note: not consecutive access _2 = *_23;
+src/vector_ops.cpp:166:28: note: not consecutive access *_21 = _3;
+src/vector_ops.cpp:166:28: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:170:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 2 distributed: split to 0 loops and 1 library calls.
+src/vector_ops.cpp:185:27: note: not vectorized: not suitable for gather load _12 = *_10;
+src/vector_ops.cpp:185:27: note: bad data references.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: different types
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:185:27: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:185:27: note: basic block vectorized
+src/vector_ops.cpp:185:27: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:185:27: note: not consecutive access _12 = *_10;
+src/vector_ops.cpp:185:27: note: not consecutive access *_20 = _12;
+src/vector_ops.cpp:185:27: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:191:12: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:753:13: note: Loop 4 distributed: split to 0 loops and 1 library calls.
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: Build SLP failed: unrolling required in basic block SLP
+/usr/include/c++/8/bits/stl_vector.h:296:18: note: basic block vectorized
+/usr/include/c++/8/ext/new_allocator.h:101:2: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/ext/new_allocator.h:111:41: note: not vectorized: not enough data-refs in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not consecutive access MEM[(struct _Vector_base *)output_10(D)]._M_impl._M_start = _41;
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not consecutive access MEM[(struct _Vector_base *)output_10(D)]._M_impl._M_end_of_storage = _39;
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not vectorized: no grouped stores in basic block.
+/usr/include/c++/8/bits/stl_algobase.h:754:2: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:229:33: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:231:13: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:231:13: note: Build SLP failed: unrolling required in basic block SLP
+src/vector_ops.cpp:231:13: note: misalign = 0 bytes of ref .omp_data_o.24.m1
+src/vector_ops.cpp:249:31: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:253:10: note: not consecutive access _3 = *total_time_29(D);
+src/vector_ops.cpp:253:10: note: not consecutive access *total_time_29(D) = _5;
+src/vector_ops.cpp:253:10: note: not vectorized: no grouped stores in basic block.
+src/vector_ops.cpp:253:10: note: basic block vectorized
+/usr/include/c++/8/bits/stl_vector.h:313:2: note: not vectorized: not enough data-refs in basic block.
+src/vector_ops.cpp:254:1: note: not vectorized: not enough data-refs in basic block.

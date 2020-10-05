@@ -14,7 +14,7 @@ _OBJ = deep_core.o vector_ops.o
 OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 
 %.o: %.cpp $(DEPS)
-	$(CXX) -c -o $@ $< ${CXXFLAGS}
+	$(CXX) -c -o $@ $< -fopt-info-loop-vec-optimized="$@.vecopt_opt.txt" -fopt-info-loop-vec-missed="$@.vecopt_opt.txt" ${CXXFLAGS}
 
 %.o: %.cxx $(DEPS)
 	$(CXX) -c -o $@ $< ${CXXFLAGS}
