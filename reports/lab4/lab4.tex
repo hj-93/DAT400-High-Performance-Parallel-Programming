@@ -55,9 +55,47 @@
 
 \subsection*{Task 2 -- Parallel performance gains}
 \begin{enumerate}
-\item Text...
+\item We use \texttt{time} command to time the total execution time of the program and use \texttt{omp\_get\_wtime()} to time the parallel execution. 
+\begin{verbatim}
+    double total_time_in_parallel = 0; // variable in global namespace
+    double start = omp_get_wtime();
+    ... parallel code ...
+    double end = omp_get_wtime();
+    total_time_in_parallel += end - start;
+\end{verbatim}
+Regardless of number of threads, the time spent on serial execution is nearly fixed: about 2.55s. The parallel execution time decreases when increasing number of threads, Table blow shows the results.
 
-\item Text...
+%Parallel Execution: 64.6382seconds
+%real    1m7.191s
+%user    1m7.125s
+%sys     0m0.052s
+%
+%Parallel Execution: 33.3797seconds
+%real    0m35.900s
+%user    1m10.450s
+%sys     0m0.048s
+%
+%Parallel Execution: 17.8018seconds
+%real    0m20.382s
+%user    1m17.310s
+%sys     0m0.060s
+
+\item The table below shows the execution time and efficiency:
+\begin{table}[htbp]
+\centering
+\sisetup{table-number-alignment=left,table-format=2.4,table-auto-round}
+\begin{tabular}{rSSSS}
+\hline
+No of Threads: & {1} & {2} & {4} \\
+\hline
+Serial: & \SI{2.5528}{s} & \SI{2.5203}{s} & \SI{2.5802}{s}  \\
+Parallel: & \SI{64.6382}{s} & \SI{33.3797}{s} & \SI{17.8018}{s}  \\
+Efficiency: & {1} & {0.968226} & {0.907748}  \\
+\hline
+\end{tabular}
+\caption{Efficiency for different number of threads}
+\label{tab:tab22}
+\end{table}
 \end{enumerate}
 
 % Serial Impl:
@@ -111,12 +149,50 @@ schedule(guided, <param>) & \SI{4.8178}{s} & \SI{4.8473}{s} & \SI{4.7503}{s} & \
 
 
 \subsection*{Task 4 -- Which loop to parallelize?}
+All task 4 is done using 4 threads.
 \begin{enumerate}
-\item Text...
+\item  j loop(column) parallelism implementation:
+\begin{verbatim}
+    for( int row = 0; row < m1_rows; ++row ) {
+       #pragma omp parallel for shared(row) //task 4.1
+        for( int col = 0; col < m2_columns; ++col ) {
+            for( int k = 0; k < m1_columns; ++k ) {
+                output[ row * m2_columns + col ] += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
+             }
+\end{verbatim}
 
-\item Text...
+\item For k loop(entry) parallelism implementation,  each output vector element will be written simultaneously by all threads, therefore we decided to use reduction on a local variable and copy the value to each vector element  when parallel execution is done:
+\begin{verbatim}
+     for( int row = 0; row < m1_rows; ++row ) {
+         for( int col = 0; col < m2_columns; ++col ) {
+             float sum = 0;
+             #pragma omp parallel for shared(row, col) reduction(+: sum)
+             for( int k = 0; k < m1_columns; ++k ) {
+                 sum += m1[ row * m1_columns + k ] * m2[ k * m2_columns + col ];
+             }
+            output[ row * m2_columns + col ] = sum; }}
+\end{verbatim}
+\item Table below shows the parallel execution time of the 3 strategies.
 
-\item Text...
+Apparently, parallelizing  the k loop is the worst strategy because the critical region basically eliminates the benefits of multithreading, and even worse, the thread synchronization added extra cost.
+
+Parallelizing i loop(row)  slightly outperforms parallelizing j loop(column), which can be explained by cache false sharing. Compared with i loop parallelism, j loop parallelism means output vector accesses by each thread is more interleaved, i.e. higher chance of false sharing.
+\begin{table}[htbp]
+\centering
+\sisetup{table-number-alignment=left,table-format=2.4,table-auto-round}
+\begin{tabular}{rSSSS}
+\hline
+Parallelized loop: & {i} & {j} & {k} \\
+\hline
+Parallel execution time: & \SI{17.8018}{s} & \SI{19.7789}{s} & \SI{186.638}{s}  \\
+\hline
+\end{tabular}
+\caption{performance for different strategies}
+\label{tab:tab43}
+\end{table}
+%Parallel Execution: 17.8018seconds
+%Parallel Execution: 19.7789seconds
+%Parallel Execution: 186.638seconds
 \end{enumerate}
 
 % 4)
