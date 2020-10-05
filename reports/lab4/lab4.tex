@@ -31,11 +31,27 @@
 
 \section*{Report for Lab 4}
 \subsection*{Task 1 -- OpenMP parallel for}
-\begin{enumerate}
-\item Text...
+\begin{verbatim}
+#pragma omp parallel
+{
+    int thread_id = omp_get_thread_num();
+    int tcount = omp_get_num_threads();
 
-\item Text...
+    std::cout << "Thread ID " << thread_id << std::endl;
+    if (thread_id == 0) std::cout << "Total threads: " << tcount << std::endl;
+
+    #pragma omp for
+    for ( ... ) {
+        ...
+    }
+}
+\end{verbatim}
+\begin{enumerate}
+\item The thread id inside the parallel region is printed out with the aid of the \texttt{omp\_get\_thread\_num()} function.
+
+\item The total number of threads inside the parallel region is printed out with the aid of the \verb|omp_get_num_threads()| function. It is printed only if \verb|thread_id == 0|. Therefore, it is output only once.
 \end{enumerate}
+
 
 \subsection*{Task 2 -- Parallel performance gains}
 \begin{enumerate}
@@ -44,14 +60,55 @@
 \item Text...
 \end{enumerate}
 
+% Serial Impl:
+% Total time in dot: 10.9268s
+% Total time (all): 13.4743s
+% Percentage in dot: 81.0938%
+% Efficiency = 10.5384s / (1 * 13.4743s) = 0,7821
+% 
+% 1 Processor:
+% Total time in dot: 8.0824s
+% Total time (all): 10.5384s
+% Percentage in dot: 76.6945%
+% Efficiency = 10.5384s / (1 * 10.5384s) = 1
+% 
+% 2 Processors:
+% Total time in dot: 4.16418s
+% Total time (all): 6.67957s
+% Percentage in dot: 62.342%
+% Efficiency = 10.5384s / (2 * 6.67957s) = 0,7889
+% 
+% 4 Processors:
+% Total time in dot: 2.11744s
+% Total time (all): 4.64428s
+% Percentage in dot: 45.5925%
+% Efficiency = 10.5384s / (4 * 4.64428s) = 0,5673
+
+
 \subsection*{Task 3 -- OpenMP scheduling policies}
+\begin{table}[htbp]
+\centering
+\sisetup{table-number-alignment=left,table-format=2.4,table-auto-round}
+\begin{tabular}{rSSSS}
+\hline
+ & {(no param)} & {1} & {16} & {128} \\
+\hline
+schedule(static, <param>) & \SI{4.6989}{s} & \SI{7.6719}{s} & \SI{4.7186}{s} & \SI{6.2623}{s} \\
+schedule(dynamic, <param>) & \SI{10.9646}{s} & \SI{10.8904}{s} & \SI{4.8008}{s} & \SI{6.3657}{s} \\
+schedule(guided, <param>) & \SI{4.8178}{s} & \SI{4.8473}{s} & \SI{4.7503}{s} & \SI{6.3849}{s} \\
+\hline
+\end{tabular}
+\caption{Total running times for all loop scheduling strategies.}
+\label{tab:tab1}
+\end{table}
 \begin{enumerate}
-\item Text...
+\item We have included all three scheduling strategies, namely \verb|static|, \verb|dynamic|, and \verb|guided|, in our experiments.
 
-\item Text...
+\item Table~\ref{tab:tab1} shows the running times of all three strategies with either no parameter specified, a chunk size of 1, 16, or 128.
 
-\item Text...
+\item The optimal policy is \verb|schedule(static)|. On the one hand,  since all loop iterations of the \textsc{Gemm} loops take more or less the same time, there is no benefit of using \verb|dynamic| scheduling because the extra time spend for scheduling does not improve the distribution of work significantly. On the other hand, \verb|schedule(static)| is more cache-locality preserving than the \verb|guided| scheduling strategy wherefore the \verb|static| policy wins the comparison.
 \end{enumerate}
+
 
 \subsection*{Task 4 -- Which loop to parallelize?}
 \begin{enumerate}
@@ -62,13 +119,69 @@
 \item Text...
 \end{enumerate}
 
+% 4)
+% 4.1)
+% #pragma omp parallel
+% {
+%     for( int row = 0; row < m1_rows; ++row ) {
+%         for( int k = 0; k < m1_columns; ++k ) {
+%             #pragma omp for
+%             for( int col = 0; col < m2_columns; ++col ) {
+%                 ...
+%             }
+%         }
+%     }
+% }
+% 
+% Total time in dot: 146.123s
+% Total time (all): 148.722s
+% Percentage in dot: 98.2529%
+% 
+% 4.2)
+% #pragma omp parallel
+% {
+%     for( int row = 0; row < m1_rows; ++row ) {
+%         #pragma omp for
+%         for( int k = 0; k < m1_columns; ++k ) {
+%             for( int col = 0; col < m2_columns; ++col ) {
+%                 ...
+%             }
+%         }
+%     }
+% }
+% 
+% Total time in dot: 26.3541s
+% Total time (all): 28.9587s
+% Percentage in dot: 91.006%
+% 
+% 4.3)
+% - Overhead for each #pragma omp for
+% - In Task 3, only invoked once per call of the function
+% - In Task 4.1, #pragma omp for called m1_rows * m1_columns times per function call
+% - In Task 4.2, #pragma omp for called m1_rows times per function call
+% 
+
+
 \subsection*{Task 5 -- Exploring SIMD}
 \begin{enumerate}
-\item Text...
+\item Without any loop permutations, there is not any vectorizing happening for any of the loops in the \textsc{Gemm} function.
 
-\item Text...
+\item With the loop permutation from Lab~2, the optimization flags \verb|-O1| and \verb|-O2| yield also no vectorization of the loops. However, using the optimization flag \verb|-O3| vectorizes the inner-most loop (column loop; \texttt{src/vector\_ops.cpp:242:39: note: loop vectorized}). The second inner-most loop ($k$ loop), however, is not vectorized (\texttt{src/vector\_ops.cpp:241:31: note: bad data references.}). Also, the outer-most loop (row loop) is not vectorized either (\texttt{src/vector\_ops.cpp:240:31: note: not vectorized: multiple nested loops.}).
 
-\item Text...
+\item With no vectorized \textsc{Gemm} loops (optimization flag \verb|-O2|), the program has the following running time.
+\begin{verbatim}
+Total time in dot: 30.82s
+Total time (all): 33.5521s
+Percentage in dot: 91.8574%
+\end{verbatim}
+With the vectorized inner-most loop (optimization flag \verb|-O3|), the program's running time improves as seen below.
+\begin{verbatim}
+Total time in dot: 10.9205s
+Total time (all): 13.4652s
+Percentage in dot: 81.1018%
+\end{verbatim}
+The total speedup is $S = \frac{\SI{33.5521}{s}}{\SI{13.4652}{s}} = 2.4918$.
 \end{enumerate}
+
 
 \end{document}
