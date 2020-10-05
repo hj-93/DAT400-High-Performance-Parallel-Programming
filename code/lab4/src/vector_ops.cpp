@@ -233,8 +233,8 @@ vector <float> dot (const vector <float>& m1, const vector <float>& m2, const in
         int thread_id = omp_get_thread_num();
         int thread_count = omp_get_num_threads();
 
-        printf("Thread ID %d", thread_id);
-        if (thread_id == 0) printf("Total number of threads: %d", thread_count);
+        std::cout << "Thread ID " << thread_id << std::endl;
+        if (thread_id == 0) std::cout << "Total number of threads: " << thread_count << std::endl;
 
         #pragma omp for schedule(static)
         for( int row = 0; row < m1_rows; ++row ) {
