@@ -13,7 +13,7 @@
 #include <chrono>
 #include "deep_core.h"
 #include "vector_ops.h"
-
+#include "omp.h"
 
 
 vector<string> split(const string &s, char delim) {
@@ -27,6 +27,8 @@ vector<string> split(const string &s, char delim) {
 }
 
 int main(int argc, char * argv[]) {
+
+  double start_omp = omp_get_wtime();
 
   string line;
   vector<string> line_v;
@@ -71,6 +73,7 @@ int main(int argc, char * argv[]) {
   vector <float> W2 = random_vector(128*64);
   vector <float> W3 = random_vector(64*10);
   
+  double total_time = 0.0;
   std::chrono::time_point<std::chrono::system_clock> t1,t2;     
   cout << "Training the model ...\n";
   for (unsigned i = 0; i < 1000; ++i) {    
@@ -87,22 +90,22 @@ int main(int argc, char * argv[]) {
     }
 
     // Feed forward
-    vector<float> a1 = relu(dot( b_X, W1, BATCH_SIZE, 784, 128 ));
-    vector<float> a2 = relu(dot( a1, W2, BATCH_SIZE, 128, 64 ));
-    vector<float> yhat = softmax(dot( a2, W3, BATCH_SIZE, 64, 10 ), 10);
+    vector<float> a1 = relu(dot( b_X, W1, BATCH_SIZE, 784, 128, &total_time));
+    vector<float> a2 = relu(dot( a1, W2, BATCH_SIZE, 128, 64, &total_time));
+    vector<float> yhat = softmax(dot( a2, W3, BATCH_SIZE, 64, 10, &total_time), 10);
     
     // Back propagation
     vector<float> dyhat = (yhat - b_y);
     // dW3 = a2.T * dyhat
-    vector<float> dW3 = dot(transform( &a2[0], BATCH_SIZE, 64 ), dyhat, 64, BATCH_SIZE, 10);
+    vector<float> dW3 = dot(transform( &a2[0], BATCH_SIZE, 64 ), dyhat, 64, BATCH_SIZE, 10, &total_time);
     // dz2 = dyhat * W3.T * relu'(a2)
-    vector<float> dz2 = dot(dyhat, transform( &W3[0], 64, 10 ), BATCH_SIZE, 10, 64) * reluPrime(a2);
+    vector<float> dz2 = dot(dyhat, transform( &W3[0], 64, 10 ), BATCH_SIZE, 10, 64, &total_time) * reluPrime(a2);
     // dW2 = a1.T * dz2
-    vector<float> dW2 = dot(transform( &a1[0], BATCH_SIZE, 128 ), dz2, 128, BATCH_SIZE, 64);
+    vector<float> dW2 = dot(transform( &a1[0], BATCH_SIZE, 128 ), dz2, 128, BATCH_SIZE, 64, &total_time);
     // dz1 = dz2 * W2.T * relu'(a1)
-    vector<float> dz1 = dot(dz2, transform( &W2[0], 128, 64 ), BATCH_SIZE, 64, 128) * reluPrime(a1);
+    vector<float> dz1 = dot(dz2, transform( &W2[0], 128, 64 ), BATCH_SIZE, 64, 128, &total_time) * reluPrime(a1);
     // dW1 = X.T * dz1
-    vector<float> dW1 = dot(transform( &b_X[0], BATCH_SIZE, 784 ), dz1, 784, BATCH_SIZE, 128);
+    vector<float> dW1 = dot(transform( &b_X[0], BATCH_SIZE, 784 ), dz1, 784, BATCH_SIZE, 128, &total_time);
     
 
     // Updating the parameters
@@ -127,8 +130,12 @@ int main(int argc, char * argv[]) {
       cout << "Iteration Time: "  << ticks << "s" << endl;
       cout << "Loss: " << loss/BATCH_SIZE << endl;
       cout << "*******************************************" << endl;
+      cout << "Total time in dot: " << total_time << "s" << endl;
     };      
   };
+
+  double end_omp = omp_get_wtime();
+  cout << "Total time (all):" << (end_omp - start_omp) << "s" << endl;
   
   return 0;
 }
