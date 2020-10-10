@@ -40,8 +40,12 @@ int main(int argc, char **argv)
 
     string line;
     vector<string> line_v;
-    int len;
-    cout << "Loading data ...\n";
+
+    if (process_id == 0)
+    {
+        cout << "Loading data ...\n";
+    }
+
     vector<float> X_train;
     vector<float> y_train;
     ifstream myfile("train.txt");
@@ -70,9 +74,10 @@ int main(int argc, char **argv)
         X_train = X_train / 255.0;
         myfile.close();
     }
-
-    else
+    else if (process_id == 0)
+    {
         cout << "Unable to open file" << '\n';
+    }
 
     int xsize = static_cast<int>(X_train.size());
     int ysize = static_cast<int>(y_train.size());
@@ -111,7 +116,12 @@ int main(int argc, char **argv)
     }
 
     std::chrono::time_point<std::chrono::system_clock> t1, t2;
-    cout << "Training the model ...\n";
+
+    if (process_id == 0)
+    {
+        cout << "Training the model ...\n";
+    }
+
     for (unsigned i = 0; i < 1000; ++i)
     {
         t1 = std::chrono::system_clock::now();
