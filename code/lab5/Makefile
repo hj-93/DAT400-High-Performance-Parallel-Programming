@@ -20,24 +20,15 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 	$(CXX) -c -o $@ $< ${CXXFLAGS}
 
 nnetwork_mpi.o:
-	$(MPICXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} -DUSE_MPI
-
-nnetwork.o:
-	$(CXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} 
+	$(CXX) -c -o $@ nnetwork_mpi.cxx ${CXXFLAGS} -DUSE_MPI
 
 nnetwork_mpi: $(OBJ) nnetwork_mpi.o
 	$(CXX) -o $@ $^ $(LIBS)
 
-nnetwork: $(OBJ) nnetwork.o
-	$(CXX) -o $@ $^ $(LIBS)
-
-run_pthreads:
-	./nnetwork
-
 run_parallel:
 	mpirun -np 4 ./nnetwork_mpi
 
-all: clean nnetwork_mpi nnetwork
+all: clean nnetwork_mpi
 .PHONY: clean
 
 default: clean nnetwork 
@@ -45,4 +36,4 @@ default: clean nnetwork
 .DEFAULT_GOAL := default
 
 clean:
-	rm -f $(ODIR)/*.o *.o nnetwork_mpi nnetwork
+	rm -f $(ODIR)/*.o *.o nnetwork_mpi
