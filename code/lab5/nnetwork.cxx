@@ -30,9 +30,17 @@ int main(int argc, char **argv)
 {
     MPI_Init(&argc, &argv);
 
+    // Number of processes
+    int num_processors;
+    MPI_Comm_size(MPI_COMM_WORLD, &num_processors);
+
+    // Number of current process
+    int process_id;
+    MPI_Comm_rank(MPI_COMM_WORLD, &process_id);
+
     string line;
     vector<string> line_v;
-    int len, mpirank = 0;
+    int len;
     cout << "Loading data ...\n";
     vector<float> X_train;
     vector<float> y_train;
@@ -70,18 +78,49 @@ int main(int argc, char **argv)
     int ysize = static_cast<int>(y_train.size());
 
     // Some hyperparameters for the NN
-    int BATCH_SIZE = 256;
+    int BATCH_SIZE = 256 / num_processors;
     float lr = .01 / BATCH_SIZE;
-    // Random initialization of the weights
-    vector<float> W1 = random_vector(784 * 128);
-    vector<float> W2 = random_vector(128 * 64);
-    vector<float> W3 = random_vector(64 * 10);
+
+    // Random initialization of the weights in root process
+    vector<float> W1;
+    vector<float> W2;
+    vector<float> W3;
+
+    if (process_id == 0)
+    {
+        W1 = random_vector(784 * 128);
+        W2 = random_vector(128 * 64);
+        W3 = random_vector(64 * 10);
+    }
+    else
+    {
+        W1.reserve(784 * 128);
+        W2.reserve(128 * 64);
+        W3.reserve(64 * 10);
+    }
+
+    // Broadcast initial weights
+    int status_w1 = MPI_Bcast((void *)W1.data(), 784 * 128, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    int status_w2 = MPI_Bcast((void *)W2.data(), 128 * 64, MPI_FLOAT, 0, MPI_COMM_WORLD);
+    int status_w3 = MPI_Bcast((void *)W3.data(), 64 * 10, MPI_FLOAT, 0, MPI_COMM_WORLD);
+
+    if (process_id == 0)
+    {
+        cout << "status_w1: " << status_w1 << endl;
+    }
+
+    if (process_id == 0 && (status_w1 || status_w2 || status_w3))
+    {
+        cout << "Broadcast of initial weights failed." << endl;
+        exit(-1);
+    }
 
     std::chrono::time_point<std::chrono::system_clock> t1, t2;
     cout << "Training the model ...\n";
     for (unsigned i = 0; i < 1000; ++i)
     {
         t1 = std::chrono::system_clock::now();
+        
         // Building batches of input variables (X) and labels (y)
         int randindx = rand() % (42000 - BATCH_SIZE);
         vector<float> b_X;
@@ -113,12 +152,27 @@ int main(int argc, char **argv)
         // dW1 = X.T * dz1
         vector<float> dW1 = dot(transform(&b_X[0], BATCH_SIZE, 784), dz1, 784, BATCH_SIZE, 128);
 
-        // Updating the parameters
-        W3 = W3 - lr * dW3;
-        W2 = W2 - lr * dW2;
-        W1 = W1 - lr * dW1;
+        // Allreduce the weight deltas to all processes
+        vector<float> dW1_aggr = process_id == 0 ? W1 - lr * dW1 : -lr * dW1;
+        vector<float> dW2_aggr = process_id == 0 ? W2 - lr * dW2 : -lr * dW2;
+        vector<float> dW3_aggr = process_id == 0 ? W3 - lr * dW3 : -lr * dW3;
 
-        if ((mpirank == 0) && (i + 1) % 100 == 0)
+        int status_allreduce_w1 = MPI_Allreduce(dW1_aggr.data(), W1.data(), 784 * 128, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+        int status_allreduce_w2 = MPI_Allreduce(dW2_aggr.data(), W2.data(), 128 * 64, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+        int status_allreduce_w3 = MPI_Allreduce(dW3_aggr.data(), W3.data(), 64 * 10, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+
+        if (process_id == 0)
+        {
+            cout << "status_allreduce_w1: " << status_allreduce_w1 << endl;
+        }
+
+        if (process_id == 0 && (status_allreduce_w1 || status_allreduce_w2 || status_allreduce_w3))
+        {
+            cout << "All-reduce failed." << endl;
+            exit(-1);
+        }
+
+        if ((process_id == 0) && (i + 1) % 100 == 0)
         {
             cout << "Predictions:"
                  << "\n";
