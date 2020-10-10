@@ -104,12 +104,7 @@ int main(int argc, char **argv)
     int status_w2 = MPI_Bcast((void *)W2.data(), 128 * 64, MPI_FLOAT, 0, MPI_COMM_WORLD);
     int status_w3 = MPI_Bcast((void *)W3.data(), 64 * 10, MPI_FLOAT, 0, MPI_COMM_WORLD);
 
-    if (process_id == 0)
-    {
-        cout << "status_w1: " << status_w1 << endl;
-    }
-
-    if (process_id == 0 && (status_w1 || status_w2 || status_w3))
+    if (process_id == 0 && (status_w1 != MPI_SUCCESS || status_w2 != MPI_SUCCESS || status_w3 != MPI_SUCCESS))
     {
         cout << "Broadcast of initial weights failed." << endl;
         exit(-1);
@@ -157,16 +152,15 @@ int main(int argc, char **argv)
         const vector<float> dW2_aggr = process_id == 0 ? W2 - lr * dW2 : -lr * dW2;
         const vector<float> dW3_aggr = process_id == 0 ? W3 - lr * dW3 : -lr * dW3;
 
-        int status_allreduce_w1 = MPI_Allreduce((const void *)dW1_aggr.data(), (void *)W1.data(), 784 * 128, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
-        int status_allreduce_w2 = MPI_Allreduce((const void *)dW2_aggr.data(), (void *)W2.data(), 128 * 64, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
-        int status_allreduce_w3 = MPI_Allreduce((const void *)dW3_aggr.data(), (void *)W3.data(), 64 * 10, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+        int status_allreduce_w1 = MPI_Allreduce((const void *)dW1_aggr.data(), (void *)W1.data(),
+                                                784 * 128, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+        int status_allreduce_w2 = MPI_Allreduce((const void *)dW2_aggr.data(), (void *)W2.data(),
+                                                128 * 64, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+        int status_allreduce_w3 = MPI_Allreduce((const void *)dW3_aggr.data(), (void *)W3.data(),
+                                                64 * 10, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
 
-        if (process_id == 0)
-        {
-            cout << "status_allreduce_w1: " << status_allreduce_w1 << endl;
-        }
-
-        if (process_id == 0 && (status_allreduce_w1 || status_allreduce_w2 || status_allreduce_w3))
+        if (process_id == 0 && (status_allreduce_w1 != MPI_SUCCESS ||
+                                status_allreduce_w2 != MPI_SUCCESS || status_allreduce_w3 != MPI_SUCCESS))
         {
             cout << "All-reduce failed." << endl;
             exit(-1);
