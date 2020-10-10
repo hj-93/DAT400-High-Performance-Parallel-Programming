@@ -120,7 +120,7 @@ int main(int argc, char **argv)
     for (unsigned i = 0; i < 1000; ++i)
     {
         t1 = std::chrono::system_clock::now();
-        
+
         // Building batches of input variables (X) and labels (y)
         int randindx = rand() % (42000 - BATCH_SIZE);
         vector<float> b_X;
@@ -153,13 +153,13 @@ int main(int argc, char **argv)
         vector<float> dW1 = dot(transform(&b_X[0], BATCH_SIZE, 784), dz1, 784, BATCH_SIZE, 128);
 
         // Allreduce the weight deltas to all processes
-        vector<float> dW1_aggr = process_id == 0 ? W1 - lr * dW1 : -lr * dW1;
-        vector<float> dW2_aggr = process_id == 0 ? W2 - lr * dW2 : -lr * dW2;
-        vector<float> dW3_aggr = process_id == 0 ? W3 - lr * dW3 : -lr * dW3;
+        const vector<float> dW1_aggr = process_id == 0 ? W1 - lr * dW1 : -lr * dW1;
+        const vector<float> dW2_aggr = process_id == 0 ? W2 - lr * dW2 : -lr * dW2;
+        const vector<float> dW3_aggr = process_id == 0 ? W3 - lr * dW3 : -lr * dW3;
 
-        int status_allreduce_w1 = MPI_Allreduce(dW1_aggr.data(), W1.data(), 784 * 128, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-        int status_allreduce_w2 = MPI_Allreduce(dW2_aggr.data(), W2.data(), 128 * 64, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
-        int status_allreduce_w3 = MPI_Allreduce(dW3_aggr.data(), W3.data(), 64 * 10, MPI_FLOAT, MPI_SUM, 0, MPI_COMM_WORLD);
+        int status_allreduce_w1 = MPI_Allreduce((const void *)dW1_aggr.data(), (void *)W1.data(), 784 * 128, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+        int status_allreduce_w2 = MPI_Allreduce((const void *)dW2_aggr.data(), (void *)W2.data(), 128 * 64, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
+        int status_allreduce_w3 = MPI_Allreduce((const void *)dW3_aggr.data(), (void *)W3.data(), 64 * 10, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
 
         if (process_id == 0)
         {
