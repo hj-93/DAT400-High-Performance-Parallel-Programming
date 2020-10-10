@@ -31,7 +31,7 @@ run_parallel:
 all: clean nnetwork_mpi
 .PHONY: clean
 
-default: clean nnetwork 
+default: clean nnetwork_mpi 
 
 .DEFAULT_GOAL := default
 
