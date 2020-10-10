@@ -10,6 +10,7 @@
 #include <string>
 #include <chrono>
 #include <mpi.h>
+#include <omp.h>
 
 #include "deep_core.h"
 #include "vector_ops.h"
@@ -28,6 +29,8 @@ vector<string> split(const string &s, char delim)
 
 int main(int argc, char **argv)
 {
+    double start_time = omp_get_wtime();
+
     MPI_Init(&argc, &argv);
 
     // Number of processes
@@ -199,6 +202,13 @@ int main(int argc, char **argv)
             cout << "*******************************************" << endl;
         };
     };
+
+    if (process_id == 0)
+    {
+        double end_time = omp_get_wtime();
+        double total_time = end_time - start_time;
+        cout << "Total time: " << total_time << "s" << endl;
+    }
 
     MPI_Finalize();
 
