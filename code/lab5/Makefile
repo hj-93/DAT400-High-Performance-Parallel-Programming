@@ -1,5 +1,5 @@
 IDIR=include
-CXX=g++-8
+CXX=mpicxx
 CXXFLAGS=-I$(IDIR) -std=c++11 -fopenmp -O3
 
 ODIR=src
@@ -20,7 +20,7 @@ OBJ = $(patsubst %,$(ODIR)/%,$(_OBJ))
 	$(CXX) -c -o $@ $< ${CXXFLAGS}
 
 nnetwork_mpi.o:
-	$(MPICXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} -DUSE_MPI
+	$(CXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} -DUSE_MPI
 
 nnetwork.o:
 	$(CXX) -c -o $@ nnetwork.cxx ${CXXFLAGS} 
