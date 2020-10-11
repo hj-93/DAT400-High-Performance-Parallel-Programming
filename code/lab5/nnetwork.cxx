@@ -13,7 +13,7 @@
 #include <chrono>
 #include "deep_core.h"
 #include "vector_ops.h"
-
+#include <mpi.h>
 
 
 vector<string> split(const string &s, char delim) {
@@ -27,11 +27,16 @@ vector<string> split(const string &s, char delim) {
 }
 
 int main(int argc, char * argv[]) {
+  // MPI: INIT
+  int mpirank = 0;
+  int p = 0, root = 0;
+  MPI_Init(&argc, &argv);
+  MPI_Comm_size(MPI_COMM_WORLD, &p);
+  MPI_Comm_rank(MPI_COMM_WORLD, &mpirank);
 
   string line;
   vector<string> line_v;
-  int len, mpirank = 0;
-  cout << "Loading data ...\n";
+  if (mpirank == 0) cout << "Loading data ...\n";
   vector<float> X_train;
   vector<float> y_train;
   ifstream myfile ("train.txt");
@@ -65,18 +70,27 @@ int main(int argc, char * argv[]) {
   
   // Some hyperparameters for the NN
   int BATCH_SIZE = 256;
+  int P_SIZE = BATCH_SIZE / p;
   float lr = .01/BATCH_SIZE;
   // Random initialization of the weights
   vector <float> W1 = random_vector(784*128);
   vector <float> W2 = random_vector(128*64);
   vector <float> W3 = random_vector(64*10);
-  
+
+  // MPI: Consistent initial random weights matrix among processes
+  MPI_Bcast(W1.data(), W1.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+  MPI_Bcast(W2.data(), W2.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+  MPI_Bcast(W3.data(), W3.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+
   std::chrono::time_point<std::chrono::system_clock> t1,t2;     
-  cout << "Training the model ...\n";
+  if (mpirank == 0) cout << "Training the model ...\n";
   for (unsigned i = 0; i < 1000; ++i) {    
     t1 = std::chrono::system_clock::now();    
     // Building batches of input variables (X) and labels (y)
     int randindx = rand() % (42000-BATCH_SIZE);
+    // MPI: Consistent randindx among processes
+    MPI_Bcast(&randindx, 1, MPI_INT, root, MPI_COMM_WORLD);
+
     vector<float> b_X;
     vector<float> b_y;
     for (unsigned j = randindx*784; j < (randindx+BATCH_SIZE)*784; ++j){
@@ -87,30 +101,70 @@ int main(int argc, char * argv[]) {
     }
 
     // Feed forward
-    vector<float> a1 = relu(dot( b_X, W1, BATCH_SIZE, 784, 128 ));
-    vector<float> a2 = relu(dot( a1, W2, BATCH_SIZE, 128, 64 ));
-    vector<float> yhat = softmax(dot( a2, W3, BATCH_SIZE, 64, 10 ), 10);
-    
+    // MPI: Distribute batch to different processes
+    vector<float> sub_b_X (b_X.begin() + mpirank * P_SIZE * 784, b_X.begin() + (mpirank + 1) * P_SIZE * 784);
+    vector<float> a1 = relu(dot( sub_b_X, W1, P_SIZE, 784, 128 ));
+    vector<float> a2 = relu(dot( a1, W2, P_SIZE, 128, 64 ));
+    vector<float> yh = dot( a2, W3, P_SIZE, 64, 10 );
+
+    a1.resize(a1.size() * p, 0);
+    a2.resize(a2.size() * p, 0);
+    yh.resize(yh.size() * p, 0);
+    MPI_Allgather(a1.data(), a1.size()/p, MPI_FLOAT, a1.data(), a1.size()/p, MPI_FLOAT, MPI_COMM_WORLD);
+    MPI_Allgather(a2.data(), a2.size()/p, MPI_FLOAT, a2.data(), a2.size()/p, MPI_FLOAT, MPI_COMM_WORLD);
+    MPI_Allgather(yh.data(), yh.size()/p, MPI_FLOAT, yh.data(), yh.size()/p, MPI_FLOAT, MPI_COMM_WORLD);
+
+    vector<float> yhat = softmax(yh, 10);
+
     // Back propagation
+    vector<float> t_tmp, sub_p;
     vector<float> dyhat = (yhat - b_y);
     // dW3 = a2.T * dyhat
-    vector<float> dW3 = dot(transform( &a2[0], BATCH_SIZE, 64 ), dyhat, 64, BATCH_SIZE, 10);
+    t_tmp = std::move(transform( &a2[0], BATCH_SIZE, 64 ));
+    sub_p = std::move(vector<float>(t_tmp.begin() + mpirank * 64/p * BATCH_SIZE, t_tmp.begin() + (mpirank + 1) * 64/p * BATCH_SIZE));
+    vector<float> dW3 = dot(sub_p, dyhat, 64/p, BATCH_SIZE, 10);
+    dW3.resize(dW3.size() * p, 0);
+    MPI_Gather(dW3.data(), dW3.size()/p, MPI_FLOAT, dW3.data(), dW3.size()/p, MPI_FLOAT, root, MPI_COMM_WORLD);
+
     // dz2 = dyhat * W3.T * relu'(a2)
-    vector<float> dz2 = dot(dyhat, transform( &W3[0], 64, 10 ), BATCH_SIZE, 10, 64) * reluPrime(a2);
+    t_tmp = std::move(transform( &W3[0], 64, 10 ));
+    sub_p = std::move(vector<float>(dyhat.begin() + mpirank * P_SIZE * 10, dyhat.begin() + (mpirank + 1) * P_SIZE * 10));
+    vector<float> dz2 = dot(sub_p, t_tmp, P_SIZE, 10, 64)* reluPrime(a2);
+    dz2.resize(dz2.size() * p, 0);
+    MPI_Allgather(dz2.data(), dz2.size()/p, MPI_FLOAT, dz2.data(), dz2.size()/p, MPI_FLOAT, MPI_COMM_WORLD);
+
     // dW2 = a1.T * dz2
-    vector<float> dW2 = dot(transform( &a1[0], BATCH_SIZE, 128 ), dz2, 128, BATCH_SIZE, 64);
+    t_tmp = std::move(transform( &a1[0], BATCH_SIZE, 128 ));
+    sub_p = std::move(vector<float>(t_tmp.begin() + mpirank * 128/p * BATCH_SIZE, t_tmp.begin() + (mpirank + 1) * 128/p * BATCH_SIZE));
+    vector<float> dW2 = dot(sub_p, dz2, 128/p, BATCH_SIZE, 64);
+    dW2.resize(dW2.size() * p, 0);
+    MPI_Gather(dW2.data(), dW2.size()/p, MPI_FLOAT, dW2.data(), dW2.size()/p, MPI_FLOAT, root, MPI_COMM_WORLD);
+
     // dz1 = dz2 * W2.T * relu'(a1)
-    vector<float> dz1 = dot(dz2, transform( &W2[0], 128, 64 ), BATCH_SIZE, 64, 128) * reluPrime(a1);
+    t_tmp = std::move(transform( &W2[0], 128, 64 ));
+    sub_p = std::move(vector<float>(dz2.begin() + mpirank * P_SIZE * 64, dz2.begin() + (mpirank + 1) * P_SIZE * 64));
+    vector<float> dz1 = dot(sub_p, t_tmp, P_SIZE, 64, 128) * reluPrime(a1);
+    dz1.resize(dz1.size() * p, 0);
+    MPI_Allgather(dz1.data(), dz1.size()/p, MPI_FLOAT, dz1.data(), dz1.size()/p, MPI_FLOAT, MPI_COMM_WORLD);
+
     // dW1 = X.T * dz1
-    vector<float> dW1 = dot(transform( &b_X[0], BATCH_SIZE, 784 ), dz1, 784, BATCH_SIZE, 128);
-    
+    t_tmp = std::move(transform( &b_X[0], BATCH_SIZE, 784 ));
+    sub_p = std::move(vector<float>(t_tmp.begin() + mpirank * 784/p * BATCH_SIZE, t_tmp.begin() + (mpirank + 1) * 784/p * BATCH_SIZE));
+    vector<float> dW1 = dot(sub_p, dz1, 784/p, BATCH_SIZE, 128);
+    dW1.resize(dW1.size() * p, 0);
+    MPI_Gather(dW1.data(), dW1.size()/p, MPI_FLOAT, dW1.data(), dW1.size()/p, MPI_FLOAT, root, MPI_COMM_WORLD);
 
     // Updating the parameters
-    W3 = W3 - lr * dW3;
-    W2 = W2 - lr * dW2;
-    W1 = W1 - lr * dW1;
-             
-    if ((mpirank == 0) && (i+1) % 100 == 0){          
+   if (mpirank == 0) {
+        W3 = W3 - lr * dW3;
+        W2 = W2 - lr * dW2;
+        W1 = W1 - lr * dW1;
+    }
+    MPI_Bcast(W1.data(), W1.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+    MPI_Bcast(W2.data(), W2.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+    MPI_Bcast(W3.data(), W3.size(), MPI_FLOAT, root, MPI_COMM_WORLD);
+
+    if ((mpirank == 0) && (i+1) % 100 == 0){
       cout << "Predictions:" << "\n";
       print ( yhat, 10, 10 );
       cout << "Ground truth:" << "\n";
@@ -129,6 +183,6 @@ int main(int argc, char * argv[]) {
       cout << "*******************************************" << endl;
     };      
   };
-  
+  MPI_Finalize();
   return 0;
 }
