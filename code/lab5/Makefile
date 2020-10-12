@@ -35,7 +35,7 @@ run_pthreads:
 	./nnetwork
 
 run_parallel:
-	mpirun -np 4 ./nnetwork_mpi
+	mpirun --bind-to none -np 2 ./nnetwork_mpi
 
 all: clean nnetwork_mpi nnetwork
 .PHONY: clean
