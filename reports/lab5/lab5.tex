@@ -34,97 +34,45 @@
 \begin{itemize}
 \item We followed the given instructions to build and run the code.
 
-\item All the work is  done in module \texttt{nnetwork.cxx}
+\item All the work is  done in module \texttt{nnetwork.cxx}.
 
-\item We distributed the weight vectors \texttt{W1}, \texttt{W2} and \texttt{W3} to allow the processes to work on a random portion of the samples on their own.
+\item We distributed the computation of the updated weight vectors to allow the processes to work on their own data. In particular, we distributed chunks of rows to different processes.
 
 \item Each call to  \texttt{dot} function will carry out a matrix multiplication and the result is stored in output vectors,
 therefore, we split and distribute the generation of each output vector into different MPI processes based on the the rows. Each MPI will process will get \texttt{total\_row\_num/process\_num} rows to deal with.
 
+\item As mentioned, each process will compute the same functions on a different chunk of data.
 
-\item Every process computes the change of the weights, i.e, the variables \texttt{dWx}.
-
-\item Root process is recollecting and displaying(every 100 iterations):
-
+\item The root process is collecting and displaying the training progress every 100 iterations.
 \begin{verbatim}
 MPI_Gather(dW3.data(), ...);
 MPI_Gather(dW2.data(), ...);
 MPI_Gather(dW1.data(), ...);
  if (mpirank == 0) {
-    W2 = W2 - lr * dW2;
-    W3 = W3 - lr * dW3;
     W1 = W1 - lr * dW1;
     W2 = W2 - lr * dW2;
+    W3 = W3 - lr * dW3;
 }
     ...
 if ((mpirank == 0) && (i+1) % 100 == 0){
     ...
 };
 \end{verbatim}
+
 \item We used the given commands to figure out the number of total processes as well as the rank of the executing process.
 
-\item We are mainly using  \texttt{MPI} collectives in the implementation:
-
-For the data needed only by the root process, we used  \texttt{MPI\_Gather} to gather all the data partitions from all processes into root process.
-
-For the data needed by all the processes, we used  \texttt{MPI\_Allgather} to make all processes get the same copy of the data.
-
-For the data needed reduced at root process but needed by all the processes, we used  \texttt{MPI\_Bcast} to distribute the data to each processes.
-
-
-\item We used the following strategy.
+\item We are mainly using  \texttt{MPI} collectives in the implementation.
 \begin{itemize}
-\item Broadcast the randomly initialized weights to all processes.
-\begin{verbatim}
-// Random initialization of the weights in root process
-vector<float> W1;
-vector<float> W2;
-vector<float> W3;
+\item For the data needed only by the root process, we used  \texttt{MPI\_Gather} to gather all the data partitions from all processes into root process.
 
-if (process_id == 0) {
-    W1 = random_vector(784 * 128);
-    W2 = random_vector(128 * 64);
-    W3 = random_vector(64 * 10);
-} else {
-    W1.reserve(784 * 128);
-    W2.reserve(128 * 64);
-    W3.reserve(64 * 10);
-}
+\item For the data needed by all the processes, we used  \texttt{MPI\_Allgather} to make all processes get the same copy of the data.
 
-// Broadcast initial weights
-MPI_Bcast((void *)W1.data(), 784 * 128, MPI_FLOAT, 0, MPI_COMM_WORLD);
-MPI_Bcast((void *)W2.data(), 128 * 64, MPI_FLOAT, 0, MPI_COMM_WORLD);
-MPI_Bcast((void *)W3.data(), 64 * 10, MPI_FLOAT, 0, MPI_COMM_WORLD);
-\end{verbatim}
-
-\item When training the model, we use \verb|MPI_Allreduce| in order to sum over all weight changes and the original weights. After the reduction, the new weights values \texttt{W1}, \texttt{W2} and \texttt{W3} are present in all processes.
-\begin{verbatim}
-// Training loop
-for (unsigned i = 0; i < 1000; ++i) {
-   
-    ... Calculate weight changes dW1, dW2, dW3 ...
-
-    // Allreduce the weight deltas to all processes
-    const auto dW1_aggr = process_id == 0 ? W1 - lr * dW1 : -lr * dW1;
-    const auto dW2_aggr = process_id == 0 ? W2 - lr * dW2 : -lr * dW2;
-    const auto dW3_aggr = process_id == 0 ? W3 - lr * dW3 : -lr * dW3;
-
-    MPI_Allreduce((const void *)dW1_aggr.data(), (void *)W1.data(),
-                  784 * 128, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
-    MPI_Allreduce((const void *)dW2_aggr.data(), (void *)W2.data(),
-                  128 * 64, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
-    MPI_Allreduce((const void *)dW3_aggr.data(), (void *)W3.data(),
-                  64 * 10, MPI_FLOAT, MPI_SUM, MPI_COMM_WORLD);
-
-    if ((process_id == 0) && (i + 1) % 100 == 0) {
-        ... Logging ...
-    }
-}
-\end{verbatim}
+\item For the data needed reduced at root process but needed by all the processes, we used  \texttt{MPI\_Bcast} to distribute the data to each processes.
 \end{itemize}
 
-\item The table below shows the speedup for each number of processes:
+\item We used the strategy based on the collectives given above. First, the initial weights as well as the current batch index are broadcast to all processes. Second, each process does the computation in the training loop on a separate batch of data. Finally, the results are gathered in the root process.
 
+\item The table below shows the speedup for each number of processes.
 \begin{table}[htbp]
 \centering
 \sisetup{table-number-alignment=left,table-format=2.4,table-auto-round}
@@ -155,7 +103,7 @@ Speedup & \SI{1.0000}{} & \SI{1.7485}{} & \SI{2.9280}{} \\
 \end{itemize}
 
 \subsection*{Task 2 -- Parallel GEMM per process}
-We made an hybrid implementation of \texttt{MPI} and \texttt{OpenMP}. For \texttt{OpenMP}, we parallize the most outter loop of the \texttt{GEMM}.
+We made an hybrid implementation of \texttt{MPI} and \texttt{OpenMP}. For \texttt{OpenMP}, we parallize the most outer loop of the \texttt{GEMM}.
 We set \texttt{OMP\_NUM\_THREADS}=2 and start 2 MPI processes by \texttt{mpirun --bind-to none -np 2 ./nnetwork\_mpi}, so that we still fully utilize the available CPU resource without over utilization.
 
 The result shows that the setup with 2 MPI processes + 2 threads per process (total: \SI{21.616}{s}) slightly outperforms the setup with 4 MPI processes + 1 thread per process (total: \SI{22.751}{s}).
