@@ -34,19 +34,43 @@
 \begin{itemize}
 \item We followed the given instructions to build and run the code.
 
-\item Text 2...
+\item All the work is  done in module \texttt{nnetwork.cxx}
 
 \item We distributed the weight vectors \texttt{W1}, \texttt{W2} and \texttt{W3} to allow the processes to work on a random portion of the samples on their own.
 
-\item Text 4...
+\item Each call to  \texttt{dot} function will carry out a matrix multiplication and the result is stored in output vectors,
+therefore, we split and distribute the generation of each output vector into different MPI processes based on the the rows. Each MPI will process will get \texttt{total\_row\_num/process\_num} rows to deal with.
+
 
 \item Every process computes the change of the weights, i.e, the variables \texttt{dWx}.
 
-\item Text 6...
+\item Root process is recollecting and displaying(every 100 iterations):
 
+\begin{verbatim}
+MPI_Gather(dW3.data(), ...);
+MPI_Gather(dW2.data(), ...);
+MPI_Gather(dW1.data(), ...);
+ if (mpirank == 0) {
+    W2 = W2 - lr * dW2;
+    W3 = W3 - lr * dW3;
+    W1 = W1 - lr * dW1;
+    W2 = W2 - lr * dW2;
+}
+    ...
+if ((mpirank == 0) && (i+1) % 100 == 0){
+    ...
+};
+\end{verbatim}
 \item We used the given commands to figure out the number of total processes as well as the rank of the executing process.
 
-\item Text 8...
+\item We are mainly using  \texttt{MPI} collectives in the implementation:
+
+For the data needed only by the root process, we used  \texttt{MPI\_Gather} to gather all the data partitions from all processes into root process.
+
+For the data needed by all the processes, we used  \texttt{MPI\_Allgather} to make all processes get the same copy of the data.
+
+For the data needed reduced at root process but needed by all the processes, we used  \texttt{MPI\_Bcast} to distribute the data to each processes.
+
 
 \item We used the following strategy.
 \begin{itemize}
@@ -99,11 +123,42 @@ for (unsigned i = 0; i < 1000; ++i) {
 \end{verbatim}
 \end{itemize}
 
-\item Text 10...
+\item The table below shows the speedup for each number of processes:
+
+\begin{table}[htbp]
+\centering
+\sisetup{table-number-alignment=left,table-format=2.4,table-auto-round}
+\begin{tabular}{rSSSS}
+\hline
+{} & {1 process} & {2 processes} & {4 processes} \\
+\hline
+Total time & \SI{66.616}{s}  & \SI{38.100}{s}  & \SI{22.751}{s}   \\
+Speedup & \SI{1.0000}{} & \SI{1.7485}{} & \SI{2.9280}{} \\
+\hline
+\end{tabular}
+\caption{Speedup for different number of processes}
+\label{tab:tab22}
+\end{table}
+
+%real    1m6.616s
+%user    1m5.496s
+%sys     0m0.166s
+%
+%real    0m38.100s
+%user    1m14.196s
+%sys     0m0.400s
+%
+%real    0m22.751s
+%user    1m26.807s
+%sys     0m0.619s
 
 \end{itemize}
 
 \subsection*{Task 2 -- Parallel GEMM per process}
-Text...
+We made an hybrid implementation of \texttt{MPI} and \texttt{OpenMP}. For \texttt{OpenMP}, we parallize the most outter loop of the \texttt{GEMM}.
+We set \texttt{OMP\_NUM\_THREADS}=2 and start 2 MPI processes by \texttt{mpirun --bind-to none -np 2 ./nnetwork\_mpi}, so that we still fully utilize the available CPU resource without over utilization.
+
+The result shows that the setup with 2 MPI processes + 2 threads per process (total: \SI{21.616}{s}) slightly outperforms the setup with 4 MPI processes + 1 thread per process (total: \SI{22.751}{s}).
+This is simply because whenever shared memory space is possible, it should be better than alternative distributed memory space due to smaller overhead.
 
 \end{document}
