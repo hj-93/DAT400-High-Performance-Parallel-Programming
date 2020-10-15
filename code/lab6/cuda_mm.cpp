@@ -87,8 +87,8 @@ void matgen(float *a, int n)
 /* Task: Implement Your Kernel Function Here */
 __global__ static void matMultCUDA(const float *a, const float *b, float *c, int n)
 {
-    int j = threadIdx.x + blockIdx.x ∗ blockDim.x;
-    int i = threadIdx.y + blockIdx.y ∗ blockDim.y;
+    int j = threadIdx.x + blockIdx.x * blockDim.x;
+    int i = threadIdx.y + blockIdx.y * blockDim.y;
 
     if (0 <= i && i < n && 0 <= j && j < n)
     {
