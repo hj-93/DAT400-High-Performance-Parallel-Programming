@@ -46,15 +46,79 @@
 
 \subsection*{Task 2 -- Tiling Implementation using Shared Memory}
 \begin{itemize}
-\item Text 1...
+\item The used machine has 49152 bytes shared memory per thread block.
 
-\item Text 2...
+\item Since we are using \texttt{floats} as a data type, each thread block can store 12288 \texttt{floats} in its shared memory. Therefore, each of the shared-memory matrices (\texttt{a}, \texttt{b} and \texttt{c}) can contain up to 4096 entries.
 
-\item Text 3...
+\item The following snippet shows the implementation of the new tiling matrix multiplication kernel.
+\begin{verbatim}
+__global__ static void matMultCUDA(const float *a, const float *b, float *c, int n)
+{
+    __shared__ float shared_a_tile[BLOCK_SIZE * BLOCK_SIZE];
+    __shared__ float shared_b_tile[BLOCK_SIZE * BLOCK_SIZE];
+    __shared__ float shared_c_tile[BLOCK_SIZE * BLOCK_SIZE];
 
-\item Text 4...
+    int j = threadIdx.x + blockIdx.x * BLOCK_SIZE;
+    int i = threadIdx.y + blockIdx.y * BLOCK_SIZE;
 
-\item Text 5...
+    if (0 <= i && i < n && 0 <= j && j < n)
+    {
+    // Init shared output tile
+    shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = 0;
+
+    // Iterate over all tiles
+    for (int k_tile = 0; k_tile < n; k_tile += BLOCK_SIZE)
+    {
+        // Copy current tiles
+        shared_a_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = 
+            a[i * n + (threadIdx.x + k_tile)];
+        shared_b_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = 
+            b[(threadIdx.y + k_tile) * n + j];
+
+        __syncthreads();
+
+        // Compute tile of elements
+        for (int k = k_tile; k < k_tile + BLOCK_SIZE && k < n; ++k)
+        {
+            shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] += 
+                shared_a_tile[threadIdx.y * BLOCK_SIZE + (k % BLOCK_SIZE)] 
+                * shared_b_tile[(k % BLOCK_SIZE) * BLOCK_SIZE + threadIdx.x];
+        }
+
+        __syncthreads();
+    }
+
+    c[i * n + j] = shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x];
+    }
+}
+\end{verbatim}
+
+\item The \texttt{BLOCK\_SIZE} variable in the following snippet is instantiated with either 4, 8, 16 or 32. It is limited to 32 since $32 \cdot 32 = 1024$ is the maximum of threads per thread block. In the case of a block size of $4 \times 4$, for example, there are \texttt{ceil(n / BLOCK\_SIZE) = 250} blocks per dimension ($250 \times 250$ blocks in total).
+\begin{verbatim}
+// 2D config with given block size
+dim3 dimGrid(ceil(n / BLOCK_SIZE), ceil(n / BLOCK_SIZE), 1);
+dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
+\end{verbatim}
+
+\item Table~\ref{tab:tab1ExecTiling} shows the execution times from 5 runs for all different configurations. Since the differences are not significant, there is no configuration that is better suited than the others. However, we expected that blocks of size $32 \times 32$ are best suited for the tiling matrix kernel since the larger the block size is, the less \texttt{\_\_syncthreads()} calls there are, which means less overhead.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cSSSS}
+\hline
+ & {4} & {8} & {16} & {32} \\
+\hline
+Run 1 & \SI{3.252}{s} & \SI{3.189}{s} & \SI{3.323}{s} & \SI{3.085}{s} \\
+Run 2 & \SI{3.138}{s} & \SI{3.183}{s} & \SI{3.285}{s} & \SI{3.355}{s} \\
+Run 3 & \SI{3.127}{s} & \SI{3.115}{s} & \SI{3.111}{s} & \SI{3.317}{s} \\
+Run 4 & \SI{3.123}{s} & \SI{3.288}{s} & \SI{3.097}{s} & \SI{3.100}{s} \\
+Run 5 & \SI{3.140}{s} & \SI{3.139}{s} & \SI{3.094}{s} & \SI{3.104}{s} \\
+\hline
+Average & \SI{3.156}{s} & \SI{3.183}{s} & \SI{3.182}{s} & \SI{3.192}{s} \\
+\hline
+\end{tabular}
+\caption{Execution times for different configurations.}
+\label{tab:tab1ExecTiling}
+\end{table}
 
 \end{itemize}
 
