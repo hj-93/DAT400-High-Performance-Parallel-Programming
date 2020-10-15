@@ -6,6 +6,7 @@
 #include <cuda_runtime.h>
 
 #define MATRIX_SIZE 1000
+#define BLOCK_SIZE 32
 
 void printDeviceProp(const cudaDeviceProp &prop)
 {
@@ -87,37 +88,37 @@ void matgen(float *a, int n)
 /* Task: Implement Your Kernel Function Here */
 __global__ static void matMultCUDA(const float *a, const float *b, float *c, int n)
 {
-    __shared__ float shared_a_tile[32 * 32];
-    __shared__ float shared_b_tile[32 * 32];
-    __shared__ float shared_c_tile[32 * 32];
+    __shared__ float shared_a_tile[BLOCK_SIZE * BLOCK_SIZE];
+    __shared__ float shared_b_tile[BLOCK_SIZE * BLOCK_SIZE];
+    __shared__ float shared_c_tile[BLOCK_SIZE * BLOCK_SIZE];
 
-    int j = threadIdx.x + blockIdx.x * 32;
-    int i = threadIdx.y + blockIdx.y * 32;
+    int j = threadIdx.x + blockIdx.x * BLOCK_SIZE;
+    int i = threadIdx.y + blockIdx.y * BLOCK_SIZE;
 
     if (0 <= i && i < n && 0 <= j && j < n)
     {
         // Init shared output tile
-        shared_c_tile[threadIdx.y * 32 + threadIdx.x] = 0;
+        shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = 0;
 
         // Iterate over all tiles
-        for (int k_tile = 0; k_tile < n; k_tile += 32)
+        for (int k_tile = 0; k_tile < n; k_tile += BLOCK_SIZE)
         {
             // Copy current tiles
-            shared_a_tile[threadIdx.y * 32 + threadIdx.x] = a[i * n + (threadIdx.x + k_tile)];
-            shared_b_tile[threadIdx.y * 32 + threadIdx.x] = b[(threadIdx.y + k_tile) * n + j];
+            shared_a_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = a[i * n + (threadIdx.x + k_tile)];
+            shared_b_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] = b[(threadIdx.y + k_tile) * n + j];
 
             __syncthreads();
 
             // Compute tile of elements
-            for (int k = k_tile; k < k_tile + 32 && k < n; ++k)
+            for (int k = k_tile; k < k_tile + BLOCK_SIZE && k < n; ++k)
             {
-                shared_c_tile[threadIdx.y * 32 + threadIdx.x] += shared_a_tile[threadIdx.y * 32 + (k % 32)] * shared_b_tile[(k % 32) * 32 + threadIdx.x];
+                shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x] += shared_a_tile[threadIdx.y * BLOCK_SIZE + (k % BLOCK_SIZE)] * shared_b_tile[(k % BLOCK_SIZE) * BLOCK_SIZE + threadIdx.x];
             }
 
             __syncthreads();
         }
 
-        c[i * n + j] = shared_c_tile[threadIdx.y * 32 + threadIdx.x];
+        c[i * n + j] = shared_c_tile[threadIdx.y * BLOCK_SIZE + threadIdx.x];
     }
 }
 
@@ -153,9 +154,8 @@ int main()
     cudaMemcpy(cuda_b, b, size_allocate, cudaMemcpyHostToDevice);
 
     // 2D config with given block size
-    int block_size = 32;
-    dim3 dimGrid(ceil(n / block_size), ceil(n / block_size), 1);
-    dim3 dimBlock(block_size, block_size, 1);
+    dim3 dimGrid(ceil(n / BLOCK_SIZE), ceil(n / BLOCK_SIZE), 1);
+    dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE, 1);
 
     // Kernel Execution
     matMultCUDA<<<dimGrid, dimBlock>>>(cuda_a, cuda_b, cuda_c, n);
