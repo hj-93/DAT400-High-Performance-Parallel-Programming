@@ -134,27 +134,10 @@ int main()
     cudaMemcpy(cuda_a, a, size_allocate, cudaMemcpyHostToDevice);
     cudaMemcpy(cuda_b, b, size_allocate, cudaMemcpyHostToDevice);
 
-#define BLOCK_CONFIG 2
-#if BLOCK_CONFIG == 0
-    // 2D config with block size of 4x4
-    dim3 dimGrid(ceil(n / 4), ceil(n / 4), 1);
-    dim3 dimBlock(4, 4, 1);
-
-#elif BLOCK_CONFIG == 1
-    // 2D config with block size of 8x8
-    dim3 dimGrid(ceil(n / 8), ceil(n / 8), 1);
-    dim3 dimBlock(8, 8, 1);
-
-#elif BLOCK_CONFIG == 2
-    // 2D config with block size of 16x16
-    dim3 dimGrid(ceil(n / 16), ceil(n / 16), 1);
-    dim3 dimBlock(16, 16, 1);
-
-#elif BLOCK_CONFIG == 3
-    // 2D config with block size of 32x32
-    dim3 dimGrid(ceil(n / 32), ceil(n / 32), 1);
-    dim3 dimBlock(32, 32, 1);
-#endif
+    // 2D config with given block size
+    int block_size = 8;
+    dim3 dimGrid(ceil(n / block_size), ceil(n / block_size), 1);
+    dim3 dimBlock(block_size, block_size, 1);
 
     // Kernel Execution
     matMultCUDA<<<dimGrid, dimBlock>>>(cuda_a, cuda_b, cuda_c, n);
