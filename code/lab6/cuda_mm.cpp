@@ -9,21 +9,21 @@
 
 void printDeviceProp(const cudaDeviceProp &prop)
 {
-printf("Device Name : %s.\n", prop.name);
-printf("totalGlobalMem : %d.\n", prop.totalGlobalMem);
-printf("sharedMemPerBlock : %d.\n", prop.sharedMemPerBlock);
-printf("regsPerBlock : %d.\n", prop.regsPerBlock);
-printf("warpSize : %d.\n", prop.warpSize);
-printf("memPitch : %d.\n", prop.memPitch);
-printf("maxThreadsPerBlock : %d.\n", prop.maxThreadsPerBlock);
-printf("maxThreadsDim[0 - 2] : %d %d %d.\n", prop.maxThreadsDim[0], prop.maxThreadsDim[1], prop.maxThreadsDim[2]);
-printf("maxGridSize[0 - 2] : %d %d %d.\n", prop.maxGridSize[0], prop.maxGridSize[1], prop.maxGridSize[2]);
-printf("totalConstMem : %d.\n", prop.totalConstMem);
-printf("major.minor : %d.%d.\n", prop.major, prop.minor);
-printf("clockRate : %d.\n", prop.clockRate);
-printf("textureAlignment : %d.\n", prop.textureAlignment);
-printf("deviceOverlap : %d.\n", prop.deviceOverlap);
-printf("multiProcessorCount : %d.\n", prop.multiProcessorCount);
+    printf("Device Name : %s.\n", prop.name);
+    printf("totalGlobalMem : %d.\n", prop.totalGlobalMem);
+    printf("sharedMemPerBlock : %d.\n", prop.sharedMemPerBlock);
+    printf("regsPerBlock : %d.\n", prop.regsPerBlock);
+    printf("warpSize : %d.\n", prop.warpSize);
+    printf("memPitch : %d.\n", prop.memPitch);
+    printf("maxThreadsPerBlock : %d.\n", prop.maxThreadsPerBlock);
+    printf("maxThreadsDim[0 - 2] : %d %d %d.\n", prop.maxThreadsDim[0], prop.maxThreadsDim[1], prop.maxThreadsDim[2]);
+    printf("maxGridSize[0 - 2] : %d %d %d.\n", prop.maxGridSize[0], prop.maxGridSize[1], prop.maxGridSize[2]);
+    printf("totalConstMem : %d.\n", prop.totalConstMem);
+    printf("major.minor : %d.%d.\n", prop.major, prop.minor);
+    printf("clockRate : %d.\n", prop.clockRate);
+    printf("textureAlignment : %d.\n", prop.textureAlignment);
+    printf("deviceOverlap : %d.\n", prop.deviceOverlap);
+    printf("multiProcessorCount : %d.\n", prop.multiProcessorCount);
 }
 
 //CUDA Initialization
@@ -33,7 +33,7 @@ bool InitCUDA()
 
     cudaGetDeviceCount(&count);
 
-    if (count == 0) 
+    if (count == 0)
     {
         fprintf(stderr, "There is no device.\n");
 
@@ -42,36 +42,35 @@ bool InitCUDA()
 
     int i;
 
-    for (i = 0; i < count; i++) 
+    for (i = 0; i < count; i++)
     {
 
-    cudaDeviceProp prop;
-    cudaGetDeviceProperties(&prop, i);
-    printDeviceProp(prop);
+        cudaDeviceProp prop;
+        cudaGetDeviceProperties(&prop, i);
+        printDeviceProp(prop);
 
-        if (cudaGetDeviceProperties(&prop, i) == cudaSuccess) 
+        if (cudaGetDeviceProperties(&prop, i) == cudaSuccess)
         {
-            if (prop.major >= 1) 
+            if (prop.major >= 1)
             {
-            break;
+                break;
             }
         }
     }
 
-    if (i == count) 
+    if (i == count)
     {
-    fprintf(stderr, "There is no device supporting CUDA 1.x.\n");
-    return false;
+        fprintf(stderr, "There is no device supporting CUDA 1.x.\n");
+        return false;
     }
 
     cudaSetDevice(i);
 
     return true;
-
 }
 
 // Generate Random Matrix Elements
-void matgen(float* a, int n)
+void matgen(float *a, int n)
 {
     int i, j;
 
@@ -81,28 +80,43 @@ void matgen(float* a, int n)
         {
 
             a[i * n + j] = (float)rand() / RAND_MAX + (float)rand() / (RAND_MAX * RAND_MAX);
-
         }
     }
 }
 
 /* Task: Implement Your Kernel Function Here */
-__global__ static void matMultCUDA(const float* a, const float* b, float* c, int n)
+__global__ static void matMultCUDA(const float *a, const float *b, float *c, int n)
 {
+    int j = threadIdx.x + blockIdx.x ∗ blockDim.x;
+    int i = threadIdx.y + blockIdx.y ∗ blockDim.y;
+
+    if (0 <= i && i < n && 0 <= j && j < n)
+    {
+        float t = 0f;
+
+        for (int k = 0; k < n; ++k)
+        {
+            t += a[i * n + k] * b[k * n + j];
+        }
+
+        c[i * n + j] = t;
+    }
 }
 
 int main()
 {
-    if (!InitCUDA()) return 0; 
+    if (!InitCUDA())
+        return 0;
 
     float *a, *b, *c, *d;
 
     int n = MATRIX_SIZE;
+    int size_allocate = sizeof(float) * n * n;
 
-    a = (float*)malloc(sizeof(float)* n * n); 
-    b = (float*)malloc(sizeof(float)* n * n); 
-    c = (float*)malloc(sizeof(float)* n * n); 
-    d = (float*)malloc(sizeof(float)* n * n);
+    a = (float *)malloc(size_allocate);
+    b = (float *)malloc(size_allocate);
+    c = (float *)malloc(size_allocate);
+    d = (float *)malloc(size_allocate);
 
     srand(0);
 
@@ -112,22 +126,42 @@ int main()
     float *cuda_a, *cuda_b, *cuda_c;
 
     /* Task: Memory Allocation */
-    cudaMalloc();
-
+    cudaMalloc((void **)&cuda_a, size_allocate);
+    cudaMalloc((void **)&cuda_b, size_allocate);
+    cudaMalloc((void **)&cuda_c, size_allocate);
 
     /* Task: CUDA Memory Copy from Host to Device */
-    cudaMemcpy();
+    cudaMemcpy(cuda_a, a, size_allocate, cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_b, b, size_allocate, cudaMemcpyHostToDevice);
 
-    /* Task: Number of Blocks and Threads && Dimention*/
-    dim3 dimGrid();
-    dim3 dimBlock();
+#define BLOCK_CONFIG 2
+#if BLOCK_CONFIG == 0
+    // 2D config with block size of 4x4
+    dim3 dimGrid(ceil(n / 4), ceil(n / 4), 1);
+    dim3 dimBlock(4, 4, 1);
+
+#elif BLOCK_CONFIG == 1
+    // 2D config with block size of 8x8
+    dim3 dimGrid(ceil(n / 8), ceil(n / 8), 1);
+    dim3 dimBlock(8, 8, 1);
+
+#elif BLOCK_CONFIG == 2
+    // 2D config with block size of 16x16
+    dim3 dimGrid(ceil(n / 16), ceil(n / 16), 1);
+    dim3 dimBlock(16, 16, 1);
+
+#elif BLOCK_CONFIG == 3
+    // 2D config with block size of 32x32
+    dim3 dimGrid(ceil(n / 32), ceil(n / 32), 1);
+    dim3 dimBlock(32, 32, 1);
+#endif
 
     // Kernel Execution
-    matMultCUDA << < dimGrid, dimBlock >> >(cuda_a , cuda_b , cuda_c , n);
+    matMultCUDA<<<dimGrid, dimBlock>>>(cuda_a, cuda_b, cuda_c, n);
 
     /* Task: CUDA Memory Copy from Device to Host */
-    cudaMemcpy();
-    
+    cudaMemcpy(c, cuda_c, size_allocate, cudaMemcpyDeviceToHost);
+
     //Free
     cudaFree(cuda_a);
     cudaFree(cuda_b);
@@ -137,38 +171,37 @@ int main()
     for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < n; j++)
-        { 
+        {
             double t = 0;
 
             for (int k = 0; k < n; k++)
-            { 
+            {
 
-                t += a[i * n + k] * b[k * n + j]; 
+                t += a[i * n + k] * b[k * n + j];
+            }
 
-            } 
-
-            d[i * n + j] = t; 
-
-        } 
+            d[i * n + j] = t;
+        }
     }
 
     // Check the accuracy of GPU results with CPU results
     float max_err = 0;
-    float average_err = 0; 
+    float average_err = 0;
 
-    for (int i = 0; i < n; i++) 
+    for (int i = 0; i < n; i++)
     {
-        for (int j = 0; j < n; j++) 
+        for (int j = 0; j < n; j++)
         {
             if (d[i * n + j] != 0)
-            { 
+            {
                 float err = fabs((c[i * n + j] - d[i * n + j]) / d[i * n + j]);
-                if (max_err < err) max_err = err; 
-                average_err += err; 
-            } 
-        } 
+                if (max_err < err)
+                    max_err = err;
+                average_err += err;
+            }
+        }
     }
 
-    printf("Max error: %g Average error: %g\n",max_err, average_err / (n * n));
-return 0;
+    printf("Max error: %g Average error: %g\n", max_err, average_err / (n * n));
+    return 0;
 }
