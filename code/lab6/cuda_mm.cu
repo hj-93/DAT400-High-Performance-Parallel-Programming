@@ -92,14 +92,12 @@ __global__ static void matMultCUDA(const float *a, const float *b, float *c, int
 
     if (0 <= i && i < n && 0 <= j && j < n)
     {
-        float t = 0f;
+        c[i * n + j] = 0f;
 
         for (int k = 0; k < n; ++k)
         {
-            t += a[i * n + k] * b[k * n + j];
+            c[i * n + j] += a[i * n + k] * b[k * n + j];
         }
-
-        c[i * n + j] = t;
     }
 }
 
