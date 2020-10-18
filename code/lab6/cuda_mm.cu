@@ -89,6 +89,19 @@ void matgen(float* a, int n)
 /* Task: Implement Your Kernel Function Here */
 __global__ static void matMultCUDA(const float* a, const float* b, float* c, int n)
 {
+    int threadId = (threadIdx.z + blockIdx.z * blockDim.z) * gridDim.y * blockDim.y * gridDim.x * blockDim.x +
+                   (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
+                   (threadIdx.x + blockIdx.x * blockDim.x);
+    int row = threadId/n;
+    int col = threadId%n;
+    int elementIdx = row * n + col;
+    if(elementIdx < n*n)
+    {
+        for (int i = 0; i < n; i++)
+        {
+            c[elementIdx] += a[row * n + i] * b[i * n + col];
+        }
+    }
 }
 
 int main()
@@ -110,23 +123,26 @@ int main()
     matgen(b, n);
 
     float *cuda_a, *cuda_b, *cuda_c;
-
+    size_t size = sizeof(float) * n * n;
     /* Task: Memory Allocation */
-    cudaMalloc();
-
+    cudaMalloc((void **) &cuda_a, size);
+    cudaMalloc((void **) &cuda_b, size);
+    cudaMalloc((void **) &cuda_c, size);
+    cudaMemset(&cuda_c, 0, size);
 
     /* Task: CUDA Memory Copy from Host to Device */
-    cudaMemcpy();
+    cudaMemcpy(cuda_a, a, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_b, b, size, cudaMemcpyHostToDevice);
 
     /* Task: Number of Blocks and Threads && Dimention*/
-    dim3 dimGrid();
-    dim3 dimBlock();
+    dim3 dimGrid(100, 100, 1);
+    dim3 dimBlock(10, 10, 1);
 
     // Kernel Execution
     matMultCUDA << < dimGrid, dimBlock >> >(cuda_a , cuda_b , cuda_c , n);
 
     /* Task: CUDA Memory Copy from Device to Host */
-    cudaMemcpy();
+    cudaMemcpy(c, cuda_c, size, cudaMemcpyDeviceToHost);
     
     //Free
     cudaFree(cuda_a);
