@@ -6,7 +6,12 @@
 #include <cuda_runtime.h>
 
 #define MATRIX_SIZE 1000
-
+#define GRID_X 200
+#define GRID_Y 200
+#define GRID_Z 1
+#define BLOCK_X 5
+#define BLOCK_Y 5
+#define BLOCK_Z 1
 void printDeviceProp(const cudaDeviceProp &prop)
 {
 printf("Device Name : %s.\n", prop.name);
@@ -89,18 +94,21 @@ void matgen(float* a, int n)
 /* Task: Implement Your Kernel Function Here */
 __global__ static void matMultCUDA(const float* a, const float* b, float* c, int n)
 {
-    int threadId = (threadIdx.z + blockIdx.z * blockDim.z) * gridDim.y * blockDim.y * gridDim.x * blockDim.x +
-                   (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
-                   (threadIdx.x + blockIdx.x * blockDim.x);
-    int row = threadId/n;
-    int col = threadId%n;
-    int elementIdx = row * n + col;
-    if(elementIdx < n*n)
-    {
-        for (int i = 0; i < n; i++)
-        {
-            c[elementIdx] += a[row * n + i] * b[i * n + col];
-        }
+    int g_threadId_x = blockIdx.x * blockDim.x + threadIdx.x;
+    int g_threadId_y = blockIdx.y * blockDim.y + threadIdx.y;
+
+    float sum = 0;
+    __shared__ float row_vec_shared[BLOCK_X * BLOCK_Y];
+    __shared__ float col_vec_shared[BLOCK_X * BLOCK_Y];
+
+    for (int i = 0; i < n/blockDim.x; i++) {
+         row_vec_shared[threadIdx.x * blockDim.y + threadIdx.y] = a[g_threadId_x * n + i * blockDim.y + threadIdx.y];
+         col_vec_shared[threadIdx.x * blockDim.y + threadIdx.y] = b[(i * blockDim.x + threadIdx.x) * n + g_threadId_y];
+         __syncthreads();
+         for (int j = 0; j < blockDim.x; j++) {
+             c[g_threadId_x * n + g_threadId_y] += row_vec_shared[threadIdx.x * blockDim.y + j] * col_vec_shared[j* blockDim.y + threadIdx.y];
+         }
+        __syncthreads();
     }
 }
 
@@ -114,9 +122,8 @@ int main()
 
     a = (float*)malloc(sizeof(float)* n * n); 
     b = (float*)malloc(sizeof(float)* n * n); 
-    c = (float*)malloc(sizeof(float)* n * n); 
+    c = (float*)malloc(sizeof(float)* n * n);
     d = (float*)malloc(sizeof(float)* n * n);
-
     srand(0);
 
     matgen(a, n);
@@ -129,14 +136,13 @@ int main()
     cudaMalloc((void **) &cuda_b, size);
     cudaMalloc((void **) &cuda_c, size);
     cudaMemset(&cuda_c, 0, size);
-
     /* Task: CUDA Memory Copy from Host to Device */
     cudaMemcpy(cuda_a, a, size, cudaMemcpyHostToDevice);
     cudaMemcpy(cuda_b, b, size, cudaMemcpyHostToDevice);
 
     /* Task: Number of Blocks and Threads && Dimention*/
-    dim3 dimGrid(100, 100, 1);
-    dim3 dimBlock(10, 10, 1);
+    dim3 dimGrid(GRID_X, GRID_Y, GRID_Z);
+    dim3 dimBlock(BLOCK_X, BLOCK_Y, BLOCK_Z);
 
     // Kernel Execution
     matMultCUDA << < dimGrid, dimBlock >> >(cuda_a , cuda_b , cuda_c , n);
