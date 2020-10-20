@@ -32,15 +32,82 @@
 \section*{Report for Lab 6}
 \subsection*{Task 1 -- Basic Implementation}
 \begin{itemize}
-\item Text 1...
+\item The code below shows our implementation:
+\begin{verbatim}
+    a = (float*)malloc(sizeof(float)* n * n); 
+    b = (float*)malloc(sizeof(float)* n * n); 
+    c = (float*)malloc(sizeof(float)* n * n); 
+    d = (float*)malloc(sizeof(float)* n * n);
+    ...
+    /* Task: Memory Allocation */
+    cudaMalloc((void **) &cuda_a, size);
+    cudaMalloc((void **) &cuda_b, size);
+    cudaMalloc((void **) &cuda_c, size);
+    cudaMemset(&cuda_c, 0, size);
 
-\item Text 2...
+    /* Task: CUDA Memory Copy from Host to Device */
+    cudaMemcpy(cuda_a, a, size, cudaMemcpyHostToDevice);
+    cudaMemcpy(cuda_b, b, size, cudaMemcpyHostToDevice);
 
-\item Text 3...
+    /* Task: Number of Blocks and Threads && Dimention*/
+    dim3 dimGrid(100, 100, 1);
+    dim3 dimBlock(10, 10, 1);
 
-\item Text 4...
+    // Kernel Execution
+    matMultCUDA << < dimGrid, dimBlock >> >(cuda_a , cuda_b , cuda_c , n);
 
-\item Text 5...
+    /* Task: CUDA Memory Copy from Device to Host */
+    cudaMemcpy(c, cuda_c, size, cudaMemcpyDeviceToHost);
+\end{verbatim}
+
+\item For each thread we calculate the global unique thread id and use it to determine which element in the output matrix the thread shall calculate. Kernel implementation is as follow:
+\begin{verbatim}
+__global__ static void matMultCUDA(const float* a, const float* b, float* c, int n)
+{
+    int threadId = (threadIdx.y + blockIdx.y * blockDim.y) * gridDim.x * blockDim.x +
+                   (threadIdx.x + blockIdx.x * blockDim.x);
+    int row = threadId/n;
+    int col = threadId%n;
+    int elementIdx = row * n + col;
+    if(elementIdx < n*n) {
+        for (int i = 0; i < n; i++) {
+            c[elementIdx] += a[row * n + i] * b[i * n + col];
+        }}
+}
+\end{verbatim}
+
+\item We tried the following configurations(all Z-dimention settings are 1) in Table~\ref{tab:tab1Config} :
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cSSSS}
+\hline
+ & {Grid\_X} & {Grid\_Y} & {Block\_X} & {Block\_Y} \\
+\hline
+Config 1 & \SI{1000}{} & \SI{1000}{} & \SI{1}{} & \SI{1}{} \\
+Config 2 & \SI{125}{} & \SI{125}{} & \SI{8}{} & \SI{8}{} \\
+Config 3 & \SI{50}{} & \SI{50}{} & \SI{20}{} & \SI{20}{} \\
+Config 4 & \SI{50}{} & \SI{25}{} & \SI{40}{} & \SI{20}{} \\
+\hline
+\end{tabular}
+\caption{4 configurations}
+\label{tab:tab1Config}
+\end{table}
+
+\item we used \texttt{nvcc -o matmul\_v1 cuda\_mm.cu; ./matmul\_v1} to compile and run the program.
+
+\item The results is as shown in Table~\ref{tab:tab1ExecTime}. Since warp size is 32, thread block with fewer than 32 threads will not fully utilize the hardware. From the results, it is obvious that thread block with only a single thread is considerably worse than other configurations. Other configurations show similar performance in terms of execution time.
+\begin{table}[htbp]
+\centering
+\begin{tabular}{cSSSS}
+\hline
+& {Config 1} & {Config 2} & {Config 3} & {Config 4} \\
+\hline
+Execution Time & \SI{3.860}{s} & \SI{3.168}{s} & \SI{3.183}{s} & \SI{3.144}{s} \\
+\hline
+\end{tabular}
+\caption{Execution Time}
+\label{tab:tab1ExecTime}
+\end{table}
 
 \end{itemize}
 
